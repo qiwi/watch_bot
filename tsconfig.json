@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"emitDecoratorMetadata": true,
 		"module": "system",
 		"target": "ES5",
 		"outFile": "bot.js",
