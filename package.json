@@ -1,0 +1,20 @@
+{
+  "name": "comment-watch-bot",
+  "version": "1.0.0",
+  "description": "a bot  that watches an API method and sends the changes to the t.me ",
+  "main": "bot.js",
+  "scripts": {
+    "test": "test",
+	"watch": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TIXFeniks/CommentWatchBot.git"
+  },
+  "author": "TIXFeniks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TIXFeniks/CommentWatchBot/issues"
+  },
+  "homepage": "https://github.com/TIXFeniks/CommentWatchBot#readme"
+}
