@@ -1,7 +1,5 @@
 var TelegramBot = require('node-telegram-bot-api');
 var token = process.env.TELEGRAM_TOKEN;
-var asdf = 0;
-var strr = 'asdfasdf';
 var bot = new TelegramBot(token, { polling: true });
 bot.onText(/\/echo (.+)/, function (msg, match) {
     // 'msg' is the received Message from Telegram
