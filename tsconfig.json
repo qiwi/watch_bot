@@ -1,9 +1,16 @@
 {
 	"compilerOptions": {
 		"emitDecoratorMetadata": true,
-		"module": "commonjs",
+		"module": "system",
 		"target": "ES5",
-		"outDir": "ts-built",
+		"outFile": "bot.js",
+		"declaration": true,
 		"rootDir": "src"
-	}
+	},
+	"include":[
+		"src/*"
+	],
+	"exclude":[
+		"node_modules"
+	]
 }

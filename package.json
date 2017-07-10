@@ -2,7 +2,8 @@
   "name": "comment-watch-bot",
   "version": "1.0.0",
   "description": "a bot  that watches an API method and sends the changes to the t.me ",
-  "main": "bot.js",
+  "main": "lib/index",
+  "types": "lib/index",
   "scripts": {
     "test": "test",
 	"watch": "tsc -w"
