@@ -1,4 +1,4 @@
-import TelegramBot = require('node-telegram-bot-api');
+import * as TelegramBot from 'node-telegram-bot-api';
 import APIWatcher from './api_watch';
 
 const token = process.env.TELEGRAM_TOKEN;

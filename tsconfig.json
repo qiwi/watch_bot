@@ -3,7 +3,7 @@
 		"module": "commonjs",
 		"target": "ES5",
 		"declaration": false,
-		"rootDir": "src",
+		"rootDir": "./",
 		"allowJs":true,
 		"types": [
             // add node as an option
@@ -15,7 +15,7 @@
             "node_modules/@types"
          ]
 	},
-	"include":[
-		"src/*"
+	"exclude": [
+		"node_modules"
 	]
 }

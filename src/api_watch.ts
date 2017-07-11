@@ -1,11 +1,5 @@
 import {EventEmitter} from 'events';
-
-// from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-function getRandomIntInclusive(min: number, max: number): number {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; // The maximum is inclusive and the minimum is inclusive 
-}
+import {getRandomIntInclusive} from './utils';
 
 // this class watches the API for changes
 export default class APIWatcher extends EventEmitter {
@@ -14,7 +8,6 @@ export default class APIWatcher extends EventEmitter {
 
     constructor(public url: string, public interval: number) {
         super();
-        this.check = this.check.bind(this);
     }
 
     // starts watching process
@@ -26,15 +19,15 @@ export default class APIWatcher extends EventEmitter {
     }
 
     // starts watching process
-    public stopWatching(): void {
+    public stopWatching = (): void => {
         this.isWatching = false;
     }
 
     // gets result from API
     public check(): void {// TODO: make me execute a request
         if (this.isWatching) {
-            console.log('requesting to ' + this.url);
-            const res = '' + Math.random(); // process request
+            console.log('requesting to ' + this.url); // TODO: get rid of console.log
+            const res = '' + getRandomIntInclusive(0, 100); // process request
 
             // emit the watch event to give the result to whoever needs it
             this.emit('watch', res);
