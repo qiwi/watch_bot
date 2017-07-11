@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"module": "system",
+		"module": "commonjs",
 		"target": "ES5",
-		"outFile": "bot.js",
+		"declaration": false,
 		"rootDir": "src",
 		"allowJs":true,
 		"types": [
