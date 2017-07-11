@@ -7,6 +7,7 @@
   "scripts": {
     "test": "mocha ./test --recursive",
     "watch": "tsc -w",
+    "build": "tsc",
     "lint": "tslint src/**/*.ts --type-check --project ./tsconfig.json"
   },
   "repository": {

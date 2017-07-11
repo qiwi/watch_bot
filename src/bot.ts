@@ -1,10 +1,11 @@
 import * as TelegramBot from 'node-telegram-bot-api';
 import APIWatcher from './api_watch';
+import {IComment} from './api';
 
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, {polling: true});
 
-const watcher = new APIWatcher('https://whatewer.com', 10 * 1000);
+const watcher = new APIWatcher('https://whatewer.com', 10 * 1000); // TODO: fix the link
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
@@ -45,8 +46,22 @@ bot.onText(/\/stop/, (msg, match) => {
   bot.sendMessage(chatId, 'stopped watching');
 });
 
-watcher.on('watch', (res: string) => {
-  console.log('watching with res ' + res);
+watcher.on('newComment', (res: IComment[]) => {
+  console.log('new Messages: ' + res);  // TODO: remove console.log
+
+  res.forEach((comment: IComment): void => {
+    // send and log every new comment
+    const message: string = 'New Message:\n' + comment.comment + '\nWith amount: ' + comment.amount;
+    console.log('Message: ' + message);
+    for ( const id in activeChats) {
+      if ( activeChats.hasOwnProperty(id)) {
+        bot.sendMessage(id, message);
+      });
+    }
+  }
+});
+watcher.on('error', (res: string) => {
+  console.log('error ' + res);  // TODO: remove console.log
   for ( const id in activeChats) {
     if ( activeChats.hasOwnProperty(id)) {
       bot.sendMessage(id, res);
