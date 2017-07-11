@@ -3,8 +3,8 @@
 		"module": "system",
 		"target": "ES5",
 		"outFile": "bot.js",
-		"declaration": true,
 		"rootDir": "src",
+		"allowJs":true,
 		"types": [
             // add node as an option
             "node"
@@ -17,8 +17,5 @@
 	},
 	"include":[
 		"src/*"
-	],
-	"exclude":[
-		"node_modules"
 	]
 }
