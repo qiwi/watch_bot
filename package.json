@@ -6,7 +6,8 @@
   "types": "lib/index",
   "scripts": {
     "test": "test",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "lint" : "tslint src/**/*.ts --type-check --project ./tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,11 @@
   },
   "homepage": "https://github.com/TIXFeniks/CommentWatchBot#readme",
   "dependencies": {
-    "@types/node": "^8.0.10",
     "node-telegram-bot-api": "^0.27.1"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.10",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1"
   }
 }

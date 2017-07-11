@@ -1,9 +1,8 @@
 {
 	"compilerOptions": {
-		"module": "system",
+		"module": "commonjs",
 		"target": "ES5",
-		"outFile": "bot.js",
-		"declaration": true,
+		"declaration": false,
 		"rootDir": "src",
 		"types": [
             // add node as an option
