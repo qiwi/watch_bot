@@ -2,6 +2,10 @@ import {check} from '../src/api';
 import * as sinon from 'sinon';
 import * as rp from 'request-promise-native';
 import {expect} from 'chai';
+import * as config from 'config';
+
+const username: string = config.get('HTTPAuth.userName');
+const password: string = config.get('HTTPAuth.password');
 
 describe('test suite', function(): void{
     const sandbox = sinon.sandbox.create();
@@ -37,7 +41,7 @@ describe('test suite', function(): void{
     });
     // TODO: more tests
 
-    it('should return result, provided by request-promise-native', function(done: MochaDone): void {
+    it('should return result, provided by request-promise-native mock', function(done: MochaDone): void {
         check('google.com').then((res) => {
             expect(res).to.eql(testData.result);
             done();
@@ -52,7 +56,12 @@ describe('test suite', function(): void{
         }).catch((res) => {
             done(res);
         });
-        expect(rp.get.args[0][1].headers.Authorization).to.include('Basic');
+
+        const authHeader: string = rp.get.args[0][1].headers.Authorization;
+        const res: string = Buffer.from( authHeader.split(' ')[1], 'base64').toString();
+
+        expect(res).to.eql(username + ':' + password);
+        expect(authHeader).to.include('Basic');
     });
 
     afterEach(function(done: MochaDone): void {

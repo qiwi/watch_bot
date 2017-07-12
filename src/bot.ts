@@ -10,8 +10,27 @@ const defaultInterval: number = config.get('Generall.defaultInterval');
 const url: string = config.get('Generall.APIUrl');
 // init the bot
 const bot: TelegramBot = new TelegramBot(token, {polling: true});
-
+// init watcher
 const watcher: APIWatcher = new APIWatcher(url, defaultInterval); // TODO: fix the link
+
+// bot.sendMessage wrapper, that resolves return promises
+function sendMessage(id: number, msg: string, options?: any): void {
+  bot.sendMessage(id, msg, options).then((res: any): void => {return; }).catch((err: Error): void => {
+    console.log('SendMessage ERROR: ', err.message);
+  });
+}
+
+// dict to store active chats
+const activeChats = {};
+function sendToAll(message: string, options?: any): void {
+  for ( const id in activeChats) {
+    if ( activeChats.hasOwnProperty(id)) {
+      sendMessage(parseInt(id, 10), message, options); // TODO: handle return value
+    }
+  }
+}
+
+const defaultMessageOptions = {parse_mode: 'Markdown'};
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
@@ -22,10 +41,8 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   const resp = match[1]; // the captured "whatever"
 
   // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, resp);
+  sendMessage(chatId, resp);
 });
-
-const activeChats = {};
 
 bot.onText(/\/start/, (msg, match) => {
   // 'msg' is the received Message from Telegram
@@ -37,7 +54,7 @@ bot.onText(/\/start/, (msg, match) => {
   // remember the chat to send watch messages
   activeChats[chatId] = true;
   // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, 'started watching');
+  sendMessage(chatId, 'started watching');
 });
 
 bot.onText(/\/stop/, (msg, match) => {
@@ -49,7 +66,7 @@ bot.onText(/\/stop/, (msg, match) => {
   watcher.stopWatching();
 
   // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, 'stopped watching');
+  sendMessage(chatId, 'stopped watching');
 });
 
 let errorSequenceLength: number = 0;
@@ -61,25 +78,16 @@ watcher.on('newComment', (res: IComment[]) => {
 
   res.forEach((comment: IComment): void => {
     // send and log every new comment
-    const message: string = 'New Message:\n' + comment.comment + '\nWith amount: ' + comment.amount;
+    const message: string = '*New Message*:\n' + comment.comment + '\n*With amount*: ' + comment.amount;
     console.log('Message: ' + message);
-    for ( const id in activeChats) {
-      if ( activeChats.hasOwnProperty(id)) {
-        bot.sendMessage(id, message);
-      }
-    }
+    sendToAll(message, defaultMessageOptions);
   });
 });
 
 // send a message if there's an error
 watcher.on('error', (res: string) => {
   errorSequenceLength++;
-  console.log('error ' + res);  // TODO: remove console.log
-  if (errorSequenceLength < numVerboseErrors) { // after a big amount of errors we stop sending them
-    for ( const id in activeChats) {
-      if ( activeChats.hasOwnProperty(id)) {
-        bot.sendMessage(id, res);
-      }
-    }
-  }
+  const message: string = '*error* ' + res;
+  console.log('ERROR: ' + res);  // TODO: remove console.log
+  sendToAll(message, defaultMessageOptions);
 });
