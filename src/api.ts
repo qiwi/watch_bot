@@ -1,4 +1,10 @@
-import * as rp from 'request-promise';
+import * as rp from 'request-promise-native';
+import * as config from 'config';
+
+// initialize the value of the auth header
+const username: string = config.get('HTTPAuth.userName');
+const password: string = config.get('HTTPAuth.password');
+const authHeader: string = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
 const testData = {
         result: [
@@ -32,13 +38,15 @@ export interface IComment {
 // TODO: make me execute a request
 export function check(url: string): Promise<IComment[]> {
     const options: rp.RequestPromiseOptions = {
-        json: true
+        json: true,
+        headers: {
+            Authorization: authHeader
+        }
     };
     // make a request
-    return Promise.resolve(testData.result); // FIXME: remove for testing
-    /* FIXME: uncomment when API is ready
+    // return Promise.resolve(testData.result); // FIXME: remove for testing
+    // FIXME: uncomment when API is ready
     return rp.get(url, options).then((res: any): IComment[] => {
         return res.result;
     });
-    */
 }

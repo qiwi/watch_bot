@@ -24,12 +24,13 @@
     "@types/request-promise": "^4.1.36",
     "config": "^1.26.1",
     "node-telegram-bot-api": "^0.27.1",
-    "request-promise": "^4.2.1"
+    "request-promise-native": "^1.0.4"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.10",
     "@types/node-telegram-bot-api": "^0.27.0",
+    "@types/request-promise-native": "^1.0.6",
     "@types/sinon": "^2.3.2",
     "chai": "^4.0.2",
     "mocha": "^3.4.2",
