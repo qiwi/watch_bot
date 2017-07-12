@@ -22,6 +22,7 @@
   "homepage": "https://github.com/TIXFeniks/CommentWatchBot#readme",
   "dependencies": {
     "@types/request-promise": "^4.1.36",
+    "config": "^1.26.1",
     "node-telegram-bot-api": "^0.27.1",
     "request-promise": "^4.2.1"
   },

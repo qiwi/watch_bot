@@ -1,0 +1,5 @@
+{
+    "Generall":{
+        "defaultInterval": 10000 // 10s in ms
+    }
+}
