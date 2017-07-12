@@ -1,5 +1,6 @@
 import {EventEmitter} from 'events';
 import {check, IComment} from './api';
+import logger from './logger';
 
 // this class watches the API for changes
 export default class APIWatcher extends EventEmitter {
@@ -25,7 +26,7 @@ export default class APIWatcher extends EventEmitter {
     // gets result from API
     public recheck = (): void => {
         if (this.isWatching) {
-            console.log('requesting to ' + this.url); // TODO: get rid of console.log
+            logger.info('requesting to ' + this.url); // TODO: get rid of console.log
             // ask API to get data
             check(this.url).then((res: IComment[]): void => {
                 // emit the watch event to give the result to whoever needs it

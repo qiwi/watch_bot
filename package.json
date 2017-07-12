@@ -23,6 +23,7 @@
   "dependencies": {
     "@types/request-promise": "^4.1.36",
     "config": "^1.26.1",
+    "log4js": "^2.0.1",
     "node-telegram-bot-api": "^0.27.1",
     "request-promise-native": "^1.0.4"
   },

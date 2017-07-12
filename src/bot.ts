@@ -2,6 +2,7 @@ import TelegramBot = require('node-telegram-bot-api'); // required this way, bec
 import APIWatcher from './api_watch';
 import {IComment} from './api';
 import * as config from 'config';
+import logger from './logger';
 
 // load configs
 const token: string = config.get('Generall.botTGToken');
@@ -16,7 +17,7 @@ const watcher: APIWatcher = new APIWatcher(url, defaultInterval); // TODO: fix t
 // bot.sendMessage wrapper, that resolves return promises
 function sendMessage(id: number, msg: string, options?: any): void {
   bot.sendMessage(id, msg, options).then((res: any): void => {return; }).catch((err: Error): void => {
-    console.log('SendMessage ERROR: ', err.message);
+    logger.error('SendMessage ERROR: ', err.message);
   });
 }
 
@@ -74,12 +75,12 @@ let errorSequenceLength: number = 0;
 // send new comments
 watcher.on('newComment', (res: IComment[]) => {
   errorSequenceLength = 0;
-  console.log('new Messages: ' + res);  // TODO: remove console.log
+  logger.info('new Messages: ' + res);  // TODO: remove console.log
 
   res.forEach((comment: IComment): void => {
     // send and log every new comment
     const message: string = '*New Message*:\n' + comment.comment + '\n*With amount*: ' + comment.amount;
-    console.log('Message: ' + message);
+    logger.info('Message: ' + message);
     sendToAll(message, defaultMessageOptions);
   });
 });
@@ -88,6 +89,6 @@ watcher.on('newComment', (res: IComment[]) => {
 watcher.on('error', (res: string) => {
   errorSequenceLength++;
   const message: string = '*error* ' + res;
-  console.log('ERROR: ' + res);  // TODO: remove console.log
+  logger.error('ERROR: ' + res);  // TODO: remove console.log
   sendToAll(message, defaultMessageOptions);
 });
