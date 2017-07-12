@@ -1,10 +1,10 @@
-import * as TelegramBot from 'node-telegram-bot-api';
+import TelegramBot = require('node-telegram-bot-api'); // required this way, because of weird error in @types
 import APIWatcher from './api_watch';
 import {IComment} from './api';
 import * as config from 'config';
 
-const token = config.get('Generall.botTGToken');
-const bot = new TelegramBot(token, {polling: true});
+const token: string = config.get('Generall.botTGToken');
+const bot: TelegramBot = new TelegramBot(token, {polling: true});
 
 const watcher = new APIWatcher('https://whatewer.com', config.get('Generall.defaultInterval')); // TODO: fix the link
 
@@ -57,9 +57,9 @@ watcher.on('newComment', (res: IComment[]) => {
     for ( const id in activeChats) {
       if ( activeChats.hasOwnProperty(id)) {
         bot.sendMessage(id, message);
-      });
+      }
     }
-  }
+  });
 });
 watcher.on('error', (res: string) => {
   console.log('error ' + res);  // TODO: remove console.log
