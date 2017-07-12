@@ -44,9 +44,9 @@ export function check(url: string): Promise<IComment[]> {
         }
     };
     // make a request
-    return Promise.resolve(testData.result); // FIXME: remove for testing
+    //return Promise.resolve(testData.result); // FIXME: remove after testing
     // FIXME: uncomment when API is ready
-    /*return rp.get(url, options).then((res: any): IComment[] => {
+    return rp.get(url, options).then((res: any): IComment[] => {
         return res.result;
-    });*/
+    });
 }

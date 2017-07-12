@@ -1,0 +1,27 @@
+{
+    "requestMock":{ 
+        "result":
+        [
+            {
+                "amount": 6000,
+                "status": "ACTUAL",
+                "comment": null
+            },
+            {
+                "amount": 7000,
+                "status": "ACTUAL",
+                "comment": null
+            },
+            {
+                "amount": 7000,
+                "status": "ACTUAL",
+                "comment": null
+            },
+            {
+                "amount": 10000,
+                "status": "ACTUA",
+                "comment": "test"
+            }
+        ]
+    }
+}
