@@ -23,7 +23,7 @@ export default class APIWatcher extends EventEmitter {
     }
 
     // gets result from API
-    public recheck = (): void => {// TODO: make me execute a request
+    public recheck = (): void => {
         if (this.isWatching) {
             console.log('requesting to ' + this.url); // TODO: get rid of console.log
             // ask API to get data

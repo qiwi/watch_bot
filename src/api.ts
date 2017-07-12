@@ -29,7 +29,7 @@ export interface IComment {
     comment: string;
     amount: number;
 }
-
+// TODO: make me execute a request
 export function check(url: string): Promise<IComment[]> {
     const options: rp.RequestPromiseOptions = {
         json: true
