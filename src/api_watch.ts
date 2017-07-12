@@ -10,7 +10,6 @@ export default class APIWatcher extends EventEmitter {
         super();
     }
 
-    // starts watching process
     public startWatching(): void {
         if (!this.isWatching) {
             this.isWatching = true;
@@ -33,10 +32,13 @@ export default class APIWatcher extends EventEmitter {
                 if (res.length > 0) {
                     this.emit('newComment', res);
                 }
+
                 // continue watching process
                 this.keepWatching();
             }).catch((err: Error): void => {
                 this.emit('error', err.message);
+                // continue watching process
+                this.keepWatching();
             });
         }
     }
