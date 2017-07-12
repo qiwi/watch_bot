@@ -52,7 +52,11 @@ bot.onText(/\/stop/, (msg, match) => {
   bot.sendMessage(chatId, 'stopped watching');
 });
 
+let errorSequenceLength: number = 0;
+
+// send new comments
 watcher.on('newComment', (res: IComment[]) => {
+  errorSequenceLength = 0;
   console.log('new Messages: ' + res);  // TODO: remove console.log
 
   res.forEach((comment: IComment): void => {
@@ -66,11 +70,16 @@ watcher.on('newComment', (res: IComment[]) => {
     }
   });
 });
+
+// send a message if there's an error
 watcher.on('error', (res: string) => {
+  errorSequenceLength++;
   console.log('error ' + res);  // TODO: remove console.log
-  for ( const id in activeChats) {
-    if ( activeChats.hasOwnProperty(id)) {
-      bot.sendMessage(id, res);
+  if (errorSequenceLength < numVerboseErrors) { // after a big amount of errors we stop sending them
+    for ( const id in activeChats) {
+      if ( activeChats.hasOwnProperty(id)) {
+        bot.sendMessage(id, res);
+      }
     }
   }
 });
