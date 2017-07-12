@@ -35,7 +35,6 @@ describe('test suite', function(): void{
             done(res);
         });
 
-        console.log(rp.get.args);
         const authHeader: string = rp.get.args[0][1].headers.Authorization;
         const res: string = Buffer.from( authHeader.split(' ')[1], 'base64').toString();
 
