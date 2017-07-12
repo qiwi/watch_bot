@@ -1,5 +1,6 @@
 {
     "Generall":{
-        "defaultInterval": 10000 // 10s in ms
+        "defaultInterval": 10000, // 10s in ms
+        "botTGToken": "YOUR_TOKEN_HERE" 
     }
 }
