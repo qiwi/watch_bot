@@ -2,6 +2,7 @@
     "Generall":{
         "defaultInterval": 10000, // 10s in ms
         "botTGToken": "YOUR_TOKEN_HERE", // we don't want to openly store tokens 
-        "numVerboseErrors": 20 // Number of errors bot sends to chat
+        "numVerboseErrors": 20, // Number of errors bot sends to chat
+        "APIUrl": "https://whatewer.com" // url to API
     }
 }

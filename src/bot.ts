@@ -3,10 +3,15 @@ import APIWatcher from './api_watch';
 import {IComment} from './api';
 import * as config from 'config';
 
+// load configs
 const token: string = config.get('Generall.botTGToken');
+const numVerboseErrors: number = config.get('Generall.numVerboseErrors');
+const defaultInterval: number = config.get('Generall.defaultInterval');
+const url: string = config.get('Generall.APIUrl');
+// init the bot
 const bot: TelegramBot = new TelegramBot(token, {polling: true});
 
-const watcher = new APIWatcher('https://whatewer.com', config.get('Generall.defaultInterval')); // TODO: fix the link
+const watcher: APIWatcher = new APIWatcher(url, defaultInterval); // TODO: fix the link
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
