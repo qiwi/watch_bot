@@ -37,21 +37,22 @@ describe('test suite', function(): void{
     });
     // TODO: more tests
 
-    it('should be true', function(done: MochaDone): void {
+    it('should return result, provided by request-promise-native', function(done: MochaDone): void {
         check('google.com').then((res) => {
             expect(res).to.eql(testData.result);
             done();
         }).catch((res) => {
             done(res);
         });
+    });
 
-        // FIXME: should be used
-        expect(rp.get.args).to.eql([[
-          'google.com',
-          {
-            json: true
-          }
-        ]]);
+    it('should give proper headers for auth', function(done: MochaDone): void {
+        check('google.com').then((res) => {
+            done();
+        }).catch((res) => {
+            done(res);
+        });
+        expect(rp.get.args[0][1].headers.Authorization).to.include('Basic');
     });
 
     afterEach(function(done: MochaDone): void {
