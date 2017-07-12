@@ -24,23 +24,24 @@ export default class APIWatcher extends EventEmitter {
     }
 
     // gets result from API
-    public recheck = (): void => {
+    public recheck = async (): Promise<void> => {
         if (this.isWatching) {
-            logger.info('requesting to ' + this.url); // TODO: get rid of console.log
-            // ask API to get data
-            check(this.url).then((res: IComment[]): void => {
+            try {
+                logger.info('requesting to ' + this.url); // TODO: get rid of console.log
+                // ask API to get data
+                const response: IComment[] = await check(this.url);
                 // emit the watch event to give the result to whoever needs it
-                if (res.length > 0) {
-                    this.emit('newComment', res);
+                if (response.length > 0) {
+                    this.emit('newComment', response);
                 }
 
                 // continue watching process
                 this.keepWatching();
-            }).catch((err: Error): void => {
+            } catch ( err) {
                 this.emit('error', err.message);
                 // continue watching process
                 this.keepWatching();
-            });
+            }
         }
     }
 

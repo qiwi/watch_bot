@@ -6,7 +6,7 @@ const username: string = config.get('HTTPAuth.userName');
 const password: string = config.get('HTTPAuth.password');
 const authHeader: string = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
-const testData = {
+const testData = { // TODO: remove me when API is ready
         result: [
             {
                 amount: 6000,
@@ -36,7 +36,7 @@ export interface IComment {
     amount: number;
 }
 // TODO: make me execute a request
-export function check(url: string): Promise<IComment[]> {
+export async function check(url: string): Promise<IComment[]> {
     const options: rp.RequestPromiseOptions = {
         json: true,
         headers: {
@@ -46,7 +46,6 @@ export function check(url: string): Promise<IComment[]> {
     // make a request
     // return Promise.resolve(testData.result); // FIXME: remove after testing
     // FIXME: uncomment when API is ready
-    return rp.get(url, options).then((res: any): IComment[] => {
-        return res.result;
-    });
+    const response: {result: IComment[]} = await rp.get(url, options);
+    return response.result;
 }

@@ -12,7 +12,7 @@ const url: string = config.get('Generall.APIUrl');
 // init the bot
 const bot: TelegramBot = new TelegramBot(token, {polling: true});
 // init watcher
-const watcher: APIWatcher = new APIWatcher(url, defaultInterval); // TODO: fix the link
+const watcher: APIWatcher = new APIWatcher(url, defaultInterval);
 
 // bot.sendMessage wrapper, that resolves return promises
 function sendMessage(id: number, msg: string, options?: any): void {
@@ -26,7 +26,7 @@ const activeChats = {};
 function sendToAll(message: string, options?: any): void {
   for ( const id in activeChats) {
     if ( activeChats.hasOwnProperty(id)) {
-      sendMessage(parseInt(id, 10), message, options); // TODO: handle return value
+      sendMessage(parseInt(id, 10), message, options);
     }
   }
 }
@@ -75,7 +75,7 @@ let errorSequenceLength: number = 0;
 // send new comments
 watcher.on('newComment', (res: IComment[]) => {
   errorSequenceLength = 0;
-  logger.info('new Messages: ' + res);  // TODO: remove console.log
+  logger.info('new Messages: ' + res);
 
   res.forEach((comment: IComment): void => {
     // send and log every new comment
@@ -89,6 +89,6 @@ watcher.on('newComment', (res: IComment[]) => {
 watcher.on('error', (res: string) => {
   errorSequenceLength++;
   const message: string = '*error* ' + res;
-  logger.error('ERROR: ' + res);  // TODO: remove console.log
+  logger.error('ERROR: ' + res);
   sendToAll(message, defaultMessageOptions);
 });
