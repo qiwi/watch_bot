@@ -44,7 +44,7 @@ export async function check(url: string): Promise<IComment[]> {
         }
     };
     // make a request
-    // return Promise.resolve(testData.result); // FIXME: remove after testing
+    // return testData.result; // FIXME: remove after testing
     // FIXME: uncomment when API is ready
     const response: {result: IComment[]} = await rp.get(url, options);
     return response.result;
