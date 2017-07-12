@@ -1,5 +1,4 @@
 import {EventEmitter} from 'events';
-import {getRandomIntInclusive} from './utils';
 import {check, IComment} from './api';
 
 // this class watches the API for changes
