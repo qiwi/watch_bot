@@ -24,11 +24,8 @@ function sendMessage(id: number, msg: string, options?: any): void {
 // dict to store active chats
 const activeChats = {};
 function sendToAll(message: string, options?: any): void {
-  for ( const id in activeChats) {
-    if ( activeChats.hasOwnProperty(id)) {
-      sendMessage(parseInt(id, 10), message, options);
-    }
-  }
+  Object.keys(activeChats).forEach((id) => sendMessage(parseInt(id, 10), message, options));
+  return;
 }
 
 const defaultMessageOptions = {parse_mode: 'Markdown'};
@@ -58,7 +55,8 @@ bot.onText(/\/start/, (msg, match) => {
   sendMessage(chatId, 'started watching');
 });
 
-bot.onText(/\/stop/, (msg, match) => {
+// stops watching API on /stop_watch command execution
+bot.onText(/\/stop_watch$/, (msg, match) => {
   // 'msg' is the received Message from Telegram
   // 'match' is the result of executing the regexp above on the text content
   // of the message
@@ -68,6 +66,22 @@ bot.onText(/\/stop/, (msg, match) => {
 
   // send back the matched "whatever" to the chat
   sendMessage(chatId, 'stopped watching');
+});
+
+// stops sending messages on /stop command execution
+bot.onText(/\/stop$/, (msg, match) => {
+  // 'msg' is the received Message from Telegram
+  // 'match' is the result of executing the regexp above on the text content
+  // of the message
+
+  const chatId = msg.chat.id;
+  delete activeChats[chatId];
+
+  if (Object.keys(activeChats).length === 0) {// if nobody is going to listen, stop watching
+    watcher.stopWatching();
+  }
+  // send back the matched "whatever" to the chat
+  sendMessage(chatId, 'stopped sending watch messages to you');
 });
 
 let errorSequenceLength: number = 0;

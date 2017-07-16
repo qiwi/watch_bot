@@ -11,6 +11,7 @@ export default class APIWatcher extends EventEmitter {
         super();
     }
 
+    // starts watching process
     public startWatching(): void {
         if (!this.isWatching) {
             this.isWatching = true;
@@ -18,7 +19,7 @@ export default class APIWatcher extends EventEmitter {
         }
     }
 
-    // starts watching process
+    // stops watching process
     public stopWatching = (): void => {
         this.isWatching = false;
     }
