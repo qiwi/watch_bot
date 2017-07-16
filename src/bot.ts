@@ -104,7 +104,7 @@ watcher.on('error', (res: string) => {
   errorSequenceLength++;
   const message: string = '*error* ' + res;
   logger.error('ERROR: ' + res);
-  if (errorSequenceLength < numVerboseErrors) {
+  if (errorSequenceLength <= numVerboseErrors) {
     sendToAll(message, defaultMessageOptions);
   }
 });
