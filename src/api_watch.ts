@@ -4,7 +4,8 @@ import * as config from 'config';
 
 // this class watches the API for changes
 export default class APIWatcher extends EventEmitter {
-
+    public static EVENT_NEW_COMMENT: string = 'newComment';
+    public static EVENT_ERROR: string = 'error';
     private isWatching: boolean = false;
     private api: StatAPI;
 
@@ -34,13 +35,13 @@ export default class APIWatcher extends EventEmitter {
                 const response: IComment[] = await this.api.check(this.methodUrl);
                 // emit the watch event to give the result to whoever needs it
                 if (response.length > 0) {
-                    this.emit('newComment', response);
+                    this.emit(APIWatcher.EVENT_NEW_COMMENT, response);
                 }
 
                 // continue watching process
                 this.keepWatching();
             } catch ( err) {
-                this.emit('error', err.message);
+                this.emit(APIWatcher.EVENT_ERROR, err.message);
                 // continue watching process
                 this.keepWatching();
             }

@@ -72,7 +72,7 @@ bot.onText(/\/stop$/, (msg, match) => {
 let errorSequenceLength: number = 0;
 
 // send new comments
-watcher.on('newComment', (res: IComment[]) => {
+watcher.on(APIWatcher.EVENT_NEW_COMMENT, (res: IComment[]) => {
   errorSequenceLength = 0;
   logger.info('new Messages: ' + res);
   res.forEach((comment: IComment): void => {
@@ -84,7 +84,7 @@ watcher.on('newComment', (res: IComment[]) => {
 });
 
 // send a message if there's an error
-watcher.on('error', (res: string) => {
+watcher.on(APIWatcher.EVENT_ERROR, (res: string) => {
   errorSequenceLength++;
   const message: string = '*error* ' + res;
   logger.error('ERROR: ' + res);
