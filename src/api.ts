@@ -16,6 +16,11 @@ export class StatAPI {
     constructor(private host: string) {
         // nothing to do here yet
     }
+    /**
+     * checks API method and returns it's result
+     * @param  {string} url
+     * @returns Promise
+     */
     public async check(url: string): Promise<IComment[]> {
         const options: rp.RequestPromiseOptions = {
             json: true,
