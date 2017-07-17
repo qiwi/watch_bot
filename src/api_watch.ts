@@ -2,7 +2,7 @@ import {EventEmitter} from 'events';
 import {StatAPI, IComment} from './api';
 import * as config from 'config';
 
-// this class watches the API for changes
+/** this class watches the API for messages */
 export default class APIWatcher extends EventEmitter {
     public static EVENT_NEW_COMMENT: string = 'newComment';
     public static EVENT_ERROR: string = 'error';
@@ -14,7 +14,10 @@ export default class APIWatcher extends EventEmitter {
         this.api = new StatAPI(host);
     }
 
-    // starts watching process
+    /**
+     * starts watching process
+     * @returns void
+     */
     public startWatching(): void {
         if (!this.isWatching) {
             this.isWatching = true;
@@ -22,12 +25,18 @@ export default class APIWatcher extends EventEmitter {
         }
     }
 
-    // stops watching process
+    /**
+     * stops watching process
+     * @returns void
+     */
     public stopWatching = (): void => {
         this.isWatching = false;
     }
 
-    // gets result from API
+    /**
+     * gets result from API
+     * @returns Promise
+     */
     public recheck = async (): Promise<void> => {
         if (this.isWatching) {
             try {
@@ -47,7 +56,10 @@ export default class APIWatcher extends EventEmitter {
             }
         }
     }
-
+    /**
+     * gets result from API
+     * @returns void
+     */
     private keepWatching(): void {
         setTimeout(this.recheck, this.interval);
     }
