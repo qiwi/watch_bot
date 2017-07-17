@@ -63,7 +63,7 @@ bot.onText(/\/auth$/, (msg, match) => {
   // TODO: add time limit for auth attempts
   const chatId = msg.chat.id;
   const resp = match[1]; // the captured token
-  bot.sendMessage(chatId, 'You need to ptovide a token!');
+  bot.sendMessage(chatId, 'You need to provide a token!');
 });
 
 bot.onText(/\/start/, (msg, match) => {
