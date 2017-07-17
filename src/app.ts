@@ -22,7 +22,7 @@ const defaultMessageOptions = {parse_mode: 'Markdown'};
 function checkAuth(id: string): boolean {
     const res: boolean = auth.isAuthentificated(id);
     if (!res) {
-      bot.sendMessage(id, 'You have no access to do this');
+      bot.sendMessage(id, 'You have no access to do this. To get the access run "/auth %token"');
     }
     return res;
 }
