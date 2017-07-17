@@ -55,6 +55,17 @@ bot.onText(/\/auth (.+)/, (msg, match) => {
   }
 });
 
+bot.onText(/\/auth$/, (msg, match) => {
+  // 'msg' is the received Message from Telegram
+  // 'match' is the result of executing the regexp above on the text content
+  // of the message
+
+  // TODO: add time limit for auth attempts
+  const chatId = msg.chat.id;
+  const resp = match[1]; // the captured token
+  bot.sendMessage(chatId, 'You need to ptovide a token!');
+});
+
 bot.onText(/\/start/, (msg, match) => {
   // 'msg' is the received Message from Telegram
   // 'match' is the result of executing the regexp above on the text content
