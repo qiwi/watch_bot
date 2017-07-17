@@ -32,7 +32,7 @@ export class StatAPI {
         const path: string = urljoin(this.host, url);
         logger.info('requesting to ' + path);
         // make a request
-        const response: {result: IComment[]} = await rp.get(url, options);
+        const response: {result: IComment[]} = await rp.get(path, options);
         return response.result;
     }
 }

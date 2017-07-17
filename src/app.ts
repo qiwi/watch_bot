@@ -63,7 +63,7 @@ bot.onText(/\/stop$/, (msg, match) => {
 
   if (bot.numActiveChats === 0) {// if nobody is going to listen, stop watching
     watcher.stopWatching();
-    bot.sendMessage(chatId, 'stopped watching, bcause all users are not listening');
+    bot.sendMessage(chatId, 'stopped watching, because all users are not listening');
   } else {
     bot.sendMessage(chatId, 'stopped sending watch messages to you');
   }

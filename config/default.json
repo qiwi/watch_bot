@@ -4,7 +4,7 @@
         "botTGToken": "YOUR_TOKEN_HERE",
         "numVerboseErrors": 20,
         "APIUrl": "https://whatewer.com",
-        "watchMethod": "rnd_features_stats/stats/top/latest"
+        "watchMethod": "/"
     },
     "HTTPAuth": {
         "userName": "user",
