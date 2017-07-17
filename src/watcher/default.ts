@@ -1,5 +1,5 @@
 import {EventEmitter} from 'events';
-import {StatAPI, IComment} from './api';
+import {StatAPI, IComment} from '../api/default';
 import * as config from 'config';
 
 /** this class watches the API for messages */

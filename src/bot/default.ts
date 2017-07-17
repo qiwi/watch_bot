@@ -1,5 +1,5 @@
 import TelegramBot = require('node-telegram-bot-api'); // required this way, because of weird error in @types
-import logger from './logger';
+import logger from '../logger/default';
 import * as config from 'config';
 
 const numVerboseErrors: number = config.get('Generall.numVerboseErrors');

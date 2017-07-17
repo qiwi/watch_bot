@@ -1,8 +1,8 @@
-import APIWatcher from './api_watch';
-import {IComment} from './api';
+import APIWatcher from './watcher/default';
+import {IComment} from './api/default';
 import * as config from 'config';
-import logger from './logger';
-import DefaultBot from './bot';
+import logger from './logger/default';
+import DefaultBot from './bot/default';
 
 // load configs
 const token: string = config.get('Generall.botTGToken');

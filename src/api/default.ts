@@ -1,7 +1,7 @@
 import * as rp from 'request-promise-native';
 import * as config from 'config';
 import * as urljoin from 'url-join';
-import logger from './logger';
+import logger from '../logger/default';
 // initialize the value of the auth header
 const username: string = config.get('HTTPAuth.userName');
 const password: string = config.get('HTTPAuth.password');

@@ -1,4 +1,4 @@
-import {check} from '../src/api';
+import {StatAPI} from '../src/api/default';
 import * as sinon from 'sinon';
 import * as rp from 'request-promise-native';
 import {expect} from 'chai';
@@ -6,9 +6,11 @@ import * as config from 'config';
 
 const testData = require('./mockData.json');
 
-
 const username: string = config.get('HTTPAuth.userName');
 const password: string = config.get('HTTPAuth.password');
+const url: string = config.get('Generall.APIUrl');
+const methodUrl: string = config.get('Generall.watchMethod');
+const api = new StatAPI(url);
 
 describe('test suite', function(): void{
     const sandbox = sinon.sandbox.create();
@@ -20,7 +22,7 @@ describe('test suite', function(): void{
     // TODO: more tests
 
     it('should return result, provided by request-promise-native mock', function(done: MochaDone): void {
-        check('google.com').then((res) => {
+        api.check(methodUrl).then((res) => {
             expect(res).to.eql(testData.requestMock.result);
             done();
         }).catch((res) => {
@@ -29,7 +31,7 @@ describe('test suite', function(): void{
     });
 
     it('should give proper headers for auth', function(done: MochaDone): void {
-        check('google.com').then((res) => {
+        api.check(methodUrl).then((res) => {
             done();
         }).catch((res) => {
             done(res);
