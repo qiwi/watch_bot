@@ -8,10 +8,11 @@ import DefaultBot from './bot';
 const token: string = config.get('Generall.botTGToken');
 const defaultInterval: number = config.get('Generall.defaultInterval');
 const url: string = config.get('Generall.APIUrl');
+const methodUrl: string = config.get('Generall.watchMethod');
 // init the bot
 const bot: DefaultBot = new DefaultBot(token, {polling: true});
 // init watcher
-const watcher: APIWatcher = new APIWatcher(url, defaultInterval);
+const watcher: APIWatcher = new APIWatcher(url, methodUrl, defaultInterval);
 
 const defaultMessageOptions = {parse_mode: 'Markdown'};
 

@@ -3,7 +3,8 @@
         "defaultInterval": 10000,
         "botTGToken": "YOUR_TOKEN_HERE",
         "numVerboseErrors": 20,
-        "APIUrl": "https://whatewer.com"
+        "APIUrl": "https://whatewer.com",
+        "watchMethod": "rnd_features_stats/stats/top/latest"
     },
     "HTTPAuth": {
         "userName": "user",

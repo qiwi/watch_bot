@@ -1,14 +1,16 @@
 import {EventEmitter} from 'events';
-import {check, IComment} from './api';
-import logger from './logger';
+import {StatAPI, IComment} from './api';
+import * as config from 'config';
 
 // this class watches the API for changes
 export default class APIWatcher extends EventEmitter {
 
     private isWatching: boolean = false;
+    private api: StatAPI;
 
-    constructor(public url: string, public interval: number) {
+    constructor(host: string, private methodUrl: string, public interval: number) {
         super();
+        this.api = new StatAPI(host);
     }
 
     // starts watching process
@@ -28,9 +30,8 @@ export default class APIWatcher extends EventEmitter {
     public recheck = async (): Promise<void> => {
         if (this.isWatching) {
             try {
-                logger.info('requesting to ' + this.url); // TODO: get rid of console.log
                 // ask API to get data
-                const response: IComment[] = await check(this.url);
+                const response: IComment[] = await this.api.check(this.methodUrl);
                 // emit the watch event to give the result to whoever needs it
                 if (response.length > 0) {
                     this.emit('newComment', response);
