@@ -64,7 +64,7 @@ export default class DefaultBot extends TelegramBot {
      * @returns void
      */
     public setActive(id: string): void {
-        this.activeChats.set(id, {id, errorSequenceLength: 0});
+        this.activeChats.set(id, {id, errorSequenceLength: 0, isAuthentificated: false});
     }
     /**
      * sets chat inactive. If chat is active, bot sends messages into the chat on sendToAll call

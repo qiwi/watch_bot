@@ -12,5 +12,8 @@
     },
     "Logger": {
         "logLevel": "info"
+    },
+    "BotAuth": {
+        "token": "bot_pass"
     }
 }
