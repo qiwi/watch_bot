@@ -9,6 +9,7 @@ interface IChat {
     id: string;
     /** maximal amount of errors to be sent to user if a huge seri of errors occurs */
     errorSequenceLength: number;
+    isAuthentificated: boolean;
 }
 
 export default class DefaultBot extends TelegramBot {

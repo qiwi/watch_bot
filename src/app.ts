@@ -121,7 +121,9 @@ watcher.on(APIWatcher.EVENT_NEW_COMMENT, (res: IComment[]) => {
   logger.info('new Messages: ' + res);
   res.forEach((comment: IComment): void => {
     // send and log every new comment
-    const message: string = '*New Message*:\n' + comment.comment + '\n*With amount*: ' + comment.amount;
+    const message: string = '*New Message*:\n' + comment.comment +
+        '\n*With amount*: ' + comment.amount +
+        '\n*Id*: ' + comment.idPayment;
     logger.info('Message: ' + message);
     bot.sendToAll(message, defaultMessageOptions);
   });

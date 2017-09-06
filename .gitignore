@@ -5,3 +5,4 @@ config/*
 **/*.log
 out/
 .vscode/
+.idea

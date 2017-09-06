@@ -8,6 +8,7 @@ const password: string = config.get('HTTPAuth.password');
 const authHeader: string = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
 export interface IComment {
+    idPayment: string;
     comment: string;
     amount: number;
 }
