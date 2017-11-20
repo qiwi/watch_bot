@@ -1,17 +1,17 @@
 import {EventEmitter} from 'events';
-import {StatAPI, IComment} from '../api/default';
-import * as config from 'config';
+import {DefaultWatchResultFetcher} from '../watch_result_fetcher/default';
+import {EResultWatcherEvent, IResultWatcher} from './interfaces';
+import {IFetcherApiResult, IWatchResultFetcher} from '../watch_result_fetcher/interfaces';
 
-/** this class watches the API for messages */
-export default class APIWatcher extends EventEmitter {
-    public static EVENT_NEW_COMMENT: string = 'newComment';
-    public static EVENT_ERROR: string = 'error';
-    private isWatching: boolean = false;
-    private api: StatAPI;
+export default class DefaultResultWatcher extends EventEmitter implements IResultWatcher {
+    private _isWatching: boolean = false;
 
-    constructor(host: string, private methodUrl: string, public interval: number) {
+    constructor(
+        protected _methodUrl: string,
+        protected _interval: number,
+        protected _api: IWatchResultFetcher = new DefaultWatchResultFetcher()
+    ) {
         super();
-        this.api = new StatAPI(host);
     }
 
     /**
@@ -19,8 +19,8 @@ export default class APIWatcher extends EventEmitter {
      * @returns void
      */
     public startWatching(): void {
-        if (!this.isWatching) {
-            this.isWatching = true;
+        if (!this._isWatching) {
+            this._isWatching = true;
             this.keepWatching();
         }
     }
@@ -29,38 +29,36 @@ export default class APIWatcher extends EventEmitter {
      * stops watching process
      * @returns void
      */
-    public stopWatching = (): void => {
-        this.isWatching = false;
+    public stopWatching(): void {
+        this._isWatching = false;
     }
 
     /**
      * gets result from API
      * @returns Promise
      */
-    public recheck = async (): Promise<void> => {
-        if (this.isWatching) {
+    public async recheck(): Promise<void> {
+        if (this._isWatching) {
             try {
-                // ask API to get data
-                const response: IComment[] = await this.api.check(this.methodUrl);
-                // emit the watch event to give the result to whoever needs it
+                const response: IFetcherApiResult[] = await this._api.check(this._methodUrl);
+
                 if (response.length > 0) {
-                    this.emit(APIWatcher.EVENT_NEW_COMMENT, response);
+                    this.emit(EResultWatcherEvent.NEW_COMMENT, response);
                 }
 
-                // continue watching process
                 this.keepWatching();
-            } catch ( err) {
-                this.emit(APIWatcher.EVENT_ERROR, err.message);
-                // continue watching process
+            } catch (err) {
+                this.emit(EResultWatcherEvent.ERROR, err.message);
                 this.keepWatching();
             }
         }
     }
+
     /**
      * gets result from API
      * @returns void
      */
     private keepWatching(): void {
-        setTimeout(this.recheck, this.interval);
+        setTimeout(this.recheck.bind(this), this._interval);
     }
 }

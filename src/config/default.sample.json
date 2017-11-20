@@ -1,0 +1,20 @@
+{
+  "general": {
+    "defaultInterval": 10000,
+    "botTGToken": "434088985:AAHs1qidPnm_o1v6RhM9zocotnMkJ-DpYes",
+    "numVerboseErrors": 20,
+    "APIUrl": "http://localhost:9080/rnd_features_stats",
+    "watchMethod": "/stats/top/latest"
+  },
+  "httpAuth": {
+    "userName": "telegram_bot",
+    "password": "*"
+  },
+  "logger": {
+    "logLevel": "debug"
+  },
+  "botAuth": {
+    "token": "SomeTest"
+  }
+}
+

@@ -1,7 +1,7 @@
 import * as log4js from 'log4js';
 import * as config from 'config';
 
-const logLevel: string = config.get('Logger.logLevel');
+const logLevel: string = config.get('logger.logLevel');
 
 log4js.configure({
   appenders: { full: { type: 'file', filename: 'full.log' } , console: {type: 'console'}},

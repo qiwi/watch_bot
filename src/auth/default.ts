@@ -1,9 +1,12 @@
-export default class Auth {
-    private authentificated: Set<string> = new Set<string>();
-    public isAuthentificated(id: string): boolean {
-        return this.authentificated.has(id);
+import {IAuth} from './interfaces';
+
+export default class Auth implements IAuth {
+    private authenticated: Set<string> = new Set<string>();
+
+    public isAuthenticated(id: string): boolean {
+        return this.authenticated.has(id);
     }
-    public authentificate(id: string): void {
-        this.authentificated.add(id);
+    public authenticate(id: string): void {
+        this.authenticated.add(id);
     }
 }

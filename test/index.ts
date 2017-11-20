@@ -1,29 +1,29 @@
-import {StatAPI} from '../src/api/default';
+import {configMock, methodUrlMock, mockData} from './mocks';
+import * as mockRequire from 'mock-require';
+mockRequire('config', configMock);
+
+import {DefaultWatchResultFetcher} from '../src/watch_result_fetcher/default';
 import * as sinon from 'sinon';
 import * as rp from 'request-promise-native';
 import {expect} from 'chai';
 import * as config from 'config';
-
-const testData = require('./mockData.json');
-
-const username: string = config.get('HTTPAuth.userName');
-const password: string = config.get('HTTPAuth.password');
-const url: string = config.get('Generall.APIUrl');
-const methodUrl: string = config.get('Generall.watchMethod');
-const api = new StatAPI(url);
+const username: string = config.get('httpAuth.userName');
+const password: string = config.get('httpAuth.password');
+const url: string = config.get('general.APIUrl');
+const api = new DefaultWatchResultFetcher();
 
 describe('test suite', function(): void{
     const sandbox = sinon.sandbox.create();
     beforeEach(function(done: MochaDone): void {
 
-        sandbox.stub(rp, 'get').callsFake(() => Promise.resolve(testData.requestMock));
+        sandbox.stub(rp, 'get').callsFake(() => Promise.resolve(mockData.requestMock));
         done();
     });
     // TODO: more tests
 
     it('should return result, provided by request-promise-native mock', function(done: MochaDone): void {
-        api.check(methodUrl).then((res) => {
-            expect(res).to.eql(testData.requestMock.result);
+        api.check(methodUrlMock).then((res) => {
+            expect(res).to.eql(mockData.requestMock.result);
             done();
         }).catch((res) => {
             done(res);
@@ -31,7 +31,7 @@ describe('test suite', function(): void{
     });
 
     it('should give proper headers for auth', function(done: MochaDone): void {
-        api.check(methodUrl).then((res) => {
+        api.check(methodUrlMock).then((res) => {
             done();
         }).catch((res) => {
             done(res);
