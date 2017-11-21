@@ -4,7 +4,7 @@
     "botTGToken": "*",
     "numVerboseErrors": 20
   },
-  "httpAuth": {
+  "auth": {
     "method": "JWT",
     "token": "*"
   },

@@ -48,7 +48,7 @@ export class MainApp {
         this._bot.onText(/\/start (.+)/, (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
-            if (this._checkAuth((chatId))) {
+            if (this._checkAuth(chatId)) {
                 this._deleteWatcher(chatId);
 
                 const watcher = this._getOrCreateWatcher(chatId, match[1]);
@@ -60,7 +60,7 @@ export class MainApp {
             }
         });
 
-        this._bot.onText(/\/start/, (msg, match) => {
+        this._bot.onText(/\/start$/, (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
             this._bot.sendMessage(chatId, 'You need to provide watch url');
@@ -129,16 +129,18 @@ export class MainApp {
 
         let errorSequenceLength = 0;
 
-        watcher.on(EResultWatcherEvent.NEW_RESULT, (res: IResult[]) => {
+        watcher.on(EResultWatcherEvent.NEW_RESULT, async (res: IResult) => {
             errorSequenceLength = 0;
 
             logger.info('new Messages: ' + res);
 
-            res.forEach((result: IResult): void => {
-                let message = 'New Message:\n' ;
+            await this._bot.sendMessage(chatId, res.message);
 
-                Object.keys(result.meta).forEach((key) => {
-                     message += `\n${key}: ${JSON.stringify(result.meta[key])}`;
+            let message = '';
+
+            res.entities.forEach((entity): void => {
+                Object.keys(entity.meta).forEach((key) => {
+                     message += `\n${key}: ${JSON.stringify(entity.meta[key])}`;
                 });
 
                 this._bot.sendMessage(chatId, message);
@@ -148,7 +150,7 @@ export class MainApp {
         watcher.on(EResultWatcherEvent.ERROR, (res: string) => {
             errorSequenceLength++;
 
-            const message: string = '*error* ' + res;
+            const message: string = 'Error: ' + res;
 
             logger.error('ERROR: ' + res);
 

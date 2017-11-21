@@ -41,9 +41,9 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
     public async recheck(): Promise<void> {
         if (this._isWatching) {
             try {
-                const response: IFetcherApiResult[] = await this._api.check(this._methodUrl);
+                const response: IFetcherApiResult = await this._api.check(this._methodUrl);
 
-                if (response.length > 0) {
+                if (response.entities.length > 0) {
                     this.emit(EResultWatcherEvent.NEW_RESULT, response);
                 }
 
