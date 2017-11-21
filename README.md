@@ -5,10 +5,10 @@ Telegram bot that can eventually fetch data from user endpoint and send info abo
 
 ![](https://github.com/qiwi/watch_bot/blob/master/bot_message_example.png?raw=true)
 
-### /auth <token>
+### /auth \<token\>
 Gives access to non-public commands (such as ``/start``).
 
-### /start <endpoint>
+### /start \<endpoint\>
 Starts eventually sending GET requests to <endponint>, processing response and printing info to subscribed user.
 Requests will include Authorization header (see config structure for credentials).
 
