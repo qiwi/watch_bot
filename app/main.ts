@@ -140,11 +140,15 @@ export class MainApp {
 
             res.entities.forEach((entity): void => {
                 Object.keys(entity.meta).forEach((key) => {
-                     message += `\n${key}: ${JSON.stringify(entity.meta[key])}`;
+                    message += `\n${key}: ${JSON.stringify(entity.meta[key])}`;
                 });
-
-                this._bot.sendMessage(chatId, message);
             });
+
+            message = message.substr(0, 4000) + '...';
+
+            if (!!message) {
+                this._bot.sendMessage(chatId, message);
+            }
         });
 
         watcher.on(EResultWatcherEvent.ERROR, (res: string) => {
