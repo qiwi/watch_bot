@@ -45,17 +45,25 @@ export class MainApp {
             this._bot.sendMessage(chatId, 'You need to provide a token!');
         });
 
-        this._bot.onText(/\/start/, (msg, match) => {
+        this._bot.onText(/\/start (.+)/, (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
             if (this._checkAuth((chatId))) {
-                const watcher = this._getOrCreateWatcher(chatId, 'test');
+                this._deleteWatcher(chatId);
+
+                const watcher = this._getOrCreateWatcher(chatId, match);
 
                 watcher.startWatching();
 
                 this._bot.setActive(chatId);
                 this._bot.sendMessage(chatId, 'started watching');
             }
+        });
+
+        this._bot.onText(/\/start/, (msg, match) => {
+            const chatId = this._getChatIdFromMsg(msg);
+
+            this._bot.sendMessage(chatId, 'You need to provide watch url');
         });
 
         this._bot.onText(/\/stop_watch$/, (msg, match) => {
