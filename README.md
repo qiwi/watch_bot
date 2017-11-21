@@ -3,6 +3,8 @@ Telegram bot that can eventually fetch data from user endpoint and send info abo
 
 ## Bot commands
 
+![](https://github.com/qiwi/watch_bot/blob/master/bot_message_example.png?raw=true)
+
 ### /auth <token>
 Gives access to non-public commands (such as ``/start``).
 
