@@ -1,0 +1,18 @@
+{
+  "general": {
+    "defaultInterval": 10000,
+    "botTGToken": "*",
+    "numVerboseErrors": 20
+  },
+  "auth": {
+    "method": "JWT",
+    "token": "*"
+  },
+  "logger": {
+    "logLevel": "debug"
+  },
+  "botAuth": {
+    "token": "SomeTest"
+  }
+}
+
