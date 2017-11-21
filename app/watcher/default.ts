@@ -10,7 +10,7 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
     constructor(
         protected _methodUrl: string,
         protected _interval: number,
-        protected _api: IWatchResultFetcher = new DefaultWatchResultFetcher()
+        protected _api: IWatchResultFetcher = new MockWatchResultFetcher()
     ) {
         super();
     }

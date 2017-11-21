@@ -139,15 +139,20 @@ export class MainApp {
             let message = '';
 
             res.entities.forEach((entity): void => {
+                message += '\n';
                 Object.keys(entity.meta).forEach((key) => {
                     message += `\n${key}: ${JSON.stringify(entity.meta[key])}`;
                 });
             });
 
-            message = message.substr(0, 4000) + '...';
+            let newMessage = message.substr(0, 4000);
+
+            if (newMessage !== message) {
+                newMessage += '...';
+            }
 
             if (!!message) {
-                this._bot.sendMessage(chatId, message);
+                this._bot.sendMessage(chatId, newMessage);
             }
         });
 

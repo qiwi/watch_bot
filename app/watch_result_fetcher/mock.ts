@@ -14,24 +14,20 @@ export class MockWatchResultFetcher implements IWatchResultFetcher {
     public async check(url: string): Promise<IFetcherApiResult> {
         return Promise.resolve(
             {
-                message: 'Test',
+                message: 'Your message',
                 entities: [
                     {
                         meta: {
-                            foo: 'foo',
-                            bar: 1,
-                            baz: true,
-                            qux: {a: 1}
+                            "key": "value",
+                            "anotherKey": 123
                         }
                     },
                     {
                         meta: {
-                            foo: 'foo1',
-                            bar: 2,
-                            baz: false,
-                            qux: {a: 1, b: {c: 'd'}}
+                            "key": "value 2",
+                            "anotherKey": {a: 123}
                         }
-                    },
+                    }
                 ]
             }
         );
