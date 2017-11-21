@@ -2,7 +2,7 @@ import * as rp from 'request-promise-native';
 import * as config from 'config';
 import * as urljoin from 'url-join';
 import logger from '../logger/default';
-import {IWatchResultFetcher, IFetcherApiResult} from './interfaces';
+import {IWatchResultFetcher, IFetcherApiResult, EResultType} from './interfaces';
 
 export class DefaultWatchResultFetcher implements IWatchResultFetcher {
     protected _authHeader: string;
@@ -32,6 +32,9 @@ export class DefaultWatchResultFetcher implements IWatchResultFetcher {
         logger.debug('requesting to ' + path);
 
         const response: {result: IFetcherApiResult[]} = await rp.get(path, options);
+
+        logger.debug('response is', response);
+
         return response.result;
     }
 }

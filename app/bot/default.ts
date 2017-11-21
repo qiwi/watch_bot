@@ -30,25 +30,24 @@ export default class DefaultBot extends TelegramBot implements IBot {
         const chat: IChat = this._activeChats.get(id);
         let doSend: boolean = true;
 
-        if (chat) {
-            if (options && options.error) {
-                chat.errorSequenceLength++;
-                if (chat.errorSequenceLength > numVerboseErrors) {
-                    doSend = false;
+        try {
+            if (chat) {
+                if (options && options.error) {
+                    chat.errorSequenceLength++;
+                    if (chat.errorSequenceLength > numVerboseErrors) {
+                        doSend = false;
+                    }
+                } else {
+                    chat.errorSequenceLength = 0;
                 }
-            } else {
-                chat.errorSequenceLength = 0;
+                this._activeChats.set(id, chat);
             }
-            this._activeChats.set(id, chat);
-        }
-        if (doSend) {
-            try {
+            if (doSend) {
                 await super.sendMessage(id, msg, options);
-            } catch (err) {
-                logger.error('SendMessage ERROR: ', err.message);
             }
+        } catch (err) {
+            logger.error('SendMessage ERROR: ', err.message);
         }
-        return;
     }
     /**
      * Send message to all active users

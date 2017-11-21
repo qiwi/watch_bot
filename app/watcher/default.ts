@@ -2,6 +2,7 @@ import {EventEmitter} from 'events';
 import {DefaultWatchResultFetcher} from '../watch_result_fetcher/default';
 import {EResultWatcherEvent, IResultWatcher} from './interfaces';
 import {IFetcherApiResult, IWatchResultFetcher} from '../watch_result_fetcher/interfaces';
+import {MockWatchResultFetcher} from '../watch_result_fetcher/mock';
 
 export default class DefaultResultWatcher extends EventEmitter implements IResultWatcher {
     private _isWatching: boolean = false;
@@ -43,7 +44,7 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
                 const response: IFetcherApiResult[] = await this._api.check(this._methodUrl);
 
                 if (response.length > 0) {
-                    this.emit(EResultWatcherEvent.NEW_COMMENT, response);
+                    this.emit(EResultWatcherEvent.NEW_RESULT, response);
                 }
 
                 this.keepWatching();

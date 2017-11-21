@@ -1,5 +1,5 @@
 
-import {MainApp} from './main';
+import {MainApp} from './app/main';
 
 const app = new MainApp();
 

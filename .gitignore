@@ -1,8 +1,7 @@
 node_modules
 *.js
 config/*
-src/config/*
-!src/config/default.sample.json
+!config/default.sample.json
 **/*.log
 out/
 .vscode/

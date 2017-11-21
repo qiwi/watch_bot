@@ -2,7 +2,7 @@ import {configMock, methodUrlMock, mockData} from './mocks';
 import * as mockRequire from 'mock-require';
 mockRequire('config', configMock);
 
-import {DefaultWatchResultFetcher} from '../src/watch_result_fetcher/default';
+import {DefaultWatchResultFetcher} from '../app/watch_result_fetcher/default';
 import * as sinon from 'sinon';
 import * as rp from 'request-promise-native';
 import {expect} from 'chai';

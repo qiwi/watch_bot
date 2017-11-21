@@ -4,11 +4,12 @@ import * as config from 'config';
 const logLevel: string = config.get('logger.logLevel');
 
 log4js.configure({
-  appenders: { full: { type: 'file', filename: 'full.log' } , console: {type: 'console'}},
-  categories: {
-    default: { appenders: ['console'], level: logLevel }
-  }
+    appenders: {console: {type: 'console'}},
+    categories: {
+        default: {appenders: ['console'], level: logLevel}
+    }
 });
 
 const logger = log4js.getLogger('console');
-export default  logger;
+
+export default logger;

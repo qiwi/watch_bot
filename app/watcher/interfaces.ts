@@ -4,7 +4,7 @@ import {IFetcherApiResult, IWatchResultFetcher} from '../watch_result_fetcher/in
 export type IResult = IFetcherApiResult;
 
 export enum EResultWatcherEvent {
-    NEW_COMMENT = 'newComment',
+    NEW_RESULT = 'newResult',
     ERROR = 'error'
 }
 

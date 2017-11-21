@@ -6,6 +6,7 @@ import {IAuth} from './auth/interfaces';
 import DefaultResultWatcher from './watcher/default';
 import logger from './logger/default';
 import * as config from 'config';
+import * as util from 'util';
 
 export class MainApp {
     private _activeWatchers: Map<string, IResultWatcher> = new Map<string, IResultWatcher>();
@@ -13,7 +14,7 @@ export class MainApp {
     constructor(
         protected _bot: IBot = new DefaultBot(config.get('general.botTGToken'), {polling: true}),
         protected _auth: IAuth = new Auth(),
-        protected _WatcherConstructor: any = DefaultResultWatcher, // TODO
+        protected _WatcherConstructor: any = DefaultResultWatcher, // TODO constructor type
         protected _botAuthToken: string = config.get('botAuth.token'),
         protected _pollIntervalMs: number = config.get('general.defaultInterval')
     ) {}
@@ -90,7 +91,7 @@ export class MainApp {
     protected _getChatIdFromMsg(msg: any): string {
         const chatId = msg.chat && msg.chat.id;
 
-        if (typeof chatId !== 'string') {
+        if (util.isNullOrUndefined(chatId)) {
             throw new Error('Wrong chat id presented: ' + JSON.stringify(msg));
         }
 
@@ -120,13 +121,19 @@ export class MainApp {
 
         let errorSequenceLength = 0;
 
-        watcher.on(EResultWatcherEvent.NEW_COMMENT, (res: IResult[]) => {
+        watcher.on(EResultWatcherEvent.NEW_RESULT, (res: IResult[]) => {
             errorSequenceLength = 0;
 
             logger.info('new Messages: ' + res);
 
-            res.forEach((comment: IResult): void => {
-                // TODO
+            res.forEach((result: IResult): void => {
+                let message = 'New Message:\n' ;
+
+                Object.keys(result.meta).forEach((key) => {
+                     message += `\n${key}: ${JSON.stringify(result.meta[key])}`;
+                });
+
+                this._bot.sendMessage(chatId, message);
             });
         });
 

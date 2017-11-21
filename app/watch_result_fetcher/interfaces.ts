@@ -4,7 +4,7 @@ export enum EResultType {
 
 export interface IFetcherApiResult {
     type: EResultType;
-    meta: {[key: string]: string};
+    meta: {[key: string]: any};
 }
 
 export interface IWatchResultFetcher {
