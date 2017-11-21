@@ -51,7 +51,7 @@ export class MainApp {
             if (this._checkAuth((chatId))) {
                 this._deleteWatcher(chatId);
 
-                const watcher = this._getOrCreateWatcher(chatId, match);
+                const watcher = this._getOrCreateWatcher(chatId, match[1]);
 
                 watcher.startWatching();
 

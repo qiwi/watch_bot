@@ -5,8 +5,8 @@
     "numVerboseErrors": 20
   },
   "httpAuth": {
-    "userName": "telegram_bot",
-    "password": "*"
+    "method": "JWT",
+    "token": "*"
   },
   "logger": {
     "logLevel": "debug"

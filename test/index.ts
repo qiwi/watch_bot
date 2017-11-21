@@ -39,10 +39,8 @@ describe('test suite', function(): void{
 
         const fn: any = rp.get;
         const authHeader: string = fn.args[0][1].headers.Authorization;
-        const res: string = Buffer.from( authHeader.split(' ')[1], 'base64').toString();
 
-        expect(res).to.eql(username + ':' + password);
-        expect(authHeader).to.include('Basic');
+        expect(authHeader).to.eql(configMock.get('auth.method') + ' ' + configMock.get('auth.token'));
     });
 
     afterEach(function(done: MochaDone): void {

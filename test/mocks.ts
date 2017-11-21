@@ -4,8 +4,8 @@ export const configMock = {
     'general.numVerboseErrors': 20,
     'general.APIUrl': 'http://localhost:9080/rnd_features_stats',
 
-    'httpAuth.userName': 'telegram_bot',
-    'httpAuth.password': '*',
+    'httpAuth.method': 'JWT',
+    'httpAuth.token': '*',
 
     'logger.logLevel': 'debug',
     'botAuth.token': '*',

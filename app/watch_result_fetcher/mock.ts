@@ -5,10 +5,10 @@ export class MockWatchResultFetcher implements IWatchResultFetcher {
     protected _authHeader: string;
 
     constructor(
-        protected _userName: string = config.get('httpAuth.userName'),
-        protected _password: string = config.get('httpAuth.password')
+        protected _token: string = config.get('auth.token'),
+        protected _method: string = config.get('auth.method'),
     ) {
-        this._authHeader = 'Basic ' + new Buffer(this._userName + ':' + this._password).toString('base64');
+        this._authHeader = this._method + ' ' + this._token;
     }
 
     public async check(url: string): Promise<IFetcherApiResult[]> {
