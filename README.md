@@ -29,6 +29,11 @@ Response structure should be like:
     ]
 }
 ```
+
+### /check \<endpoint\>
+Sends 1 GET request to provided <endponint>, processing response and printing info to subscribed user.
+Request will include Authorization header.
+
  
 ### /stop
 Stops sending requests.
@@ -44,7 +49,7 @@ git clone git@github.com:qiwi/watch_bot.git
 ```
 {
   "general": {
-    "defaultInterval": 10000,  // polling interval (ms)
+    "defaultCronTime": "*/10 * * * * *",  // polling cron time
     "botTGToken": "*", // bot telegram token - talk to @BotFather at telegram to get it
     "numVerboseErrors": 20 // bot will stop printing error message after numVerboseErrors errors in fetching data
   },
