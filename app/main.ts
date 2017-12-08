@@ -57,7 +57,7 @@ export class MainApp {
                 watcher.startWatching();
 
                 this._bot.setActive(chatId);
-                await this._bot.sendMessage(chatId, 'started watching');
+                await this._bot.sendMessage(chatId, 'started watching with interval: ' + watcher.getWatchInterval());
             }
         }));
 

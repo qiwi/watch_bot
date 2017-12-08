@@ -17,6 +17,10 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
         super();
     }
 
+    public getWatchInterval(): string {
+        return this._cronTime;
+    }
+
     public async checkOnce(): Promise<IResult> {
         try {
             return await this._api.check(this._methodUrl);

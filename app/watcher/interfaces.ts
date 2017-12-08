@@ -11,6 +11,7 @@ export enum EResultWatcherEvent {
 export interface IResultWatcher extends EventEmitter {
     startWatching(): void;
     stopWatching(): void;
-    checkOnce(): Promise<IResult>
+    checkOnce(): Promise<IResult>;
+    getWatchInterval(): string;
     on(event: EResultWatcherEvent, handler: (payload: string | IResult) => void): any;
 }
