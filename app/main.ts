@@ -8,7 +8,6 @@ import logger from './logger/default';
 import * as config from 'config';
 import * as util from 'util';
 import {DefaultWatchResultFetcher} from './watch_result_fetcher/default';
-import {BotRuntimeError} from './error/bot';
 
 export class MainApp {
     private _activeWatchers: Map<string, IResultWatcher> = new Map<string, IResultWatcher>();
