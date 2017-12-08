@@ -12,6 +12,11 @@ Gives access to non-public commands (such as ``/start``).
 Starts eventually sending GET requests to <endponint>, processing response and printing info to subscribed user.
 Requests will include Authorization header (see config structure for credentials).
 
+### /check \<endpoint\>
+Sends 1 GET request to provided <endponint>, processing response and printing info to subscribed user.
+Request will include Authorization header (see config structure for credentials).
+
+
 Response structure should be like:
 
 ```
@@ -44,7 +49,7 @@ git clone git@github.com:qiwi/watch_bot.git
 ```
 {
   "general": {
-    "defaultInterval": 10000,  // polling interval (ms)
+    "defaultCronTime": "*/10 * * * * *",  // polling cron time
     "botTGToken": "*", // bot telegram token - talk to @BotFather at telegram to get it
     "numVerboseErrors": 20 // bot will stop printing error message after numVerboseErrors errors in fetching data
   },

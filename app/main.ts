@@ -18,7 +18,6 @@ export class MainApp {
         protected _auth: IAuth = new Auth(),
         protected _WatcherConstructor: any = DefaultResultWatcher, // TODO constructor type
         protected _botAuthToken: string = config.get('botAuth.token'),
-        protected _pollIntervalMs: number = config.get('general.defaultInterval'),
         protected _watchResultFetcher = new DefaultWatchResultFetcher()
     ) {}
 
@@ -154,7 +153,7 @@ export class MainApp {
             return activeWatcher;
         }
 
-        let watcher = new this._WatcherConstructor(url, this._pollIntervalMs);
+        let watcher = new this._WatcherConstructor(url);
 
         let errorSequenceLength = 0;
 

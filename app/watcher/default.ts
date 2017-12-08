@@ -3,13 +3,15 @@ import {DefaultWatchResultFetcher} from '../watch_result_fetcher/default';
 import {EResultWatcherEvent, IResult, IResultWatcher} from './interfaces';
 import {IFetcherApiResult, IWatchResultFetcher} from '../watch_result_fetcher/interfaces';
 import {ResultWatcherError} from '../error/result_watcher';
+import {CronJob} from 'cron';
+import * as config from 'config';
 
 export default class DefaultResultWatcher extends EventEmitter implements IResultWatcher {
-    private _isWatching: boolean = false;
+    private _cronJob: CronJob;
 
     constructor(
         protected _methodUrl: string,
-        protected _interval: number = 10000,
+        protected _cronTime: string = config.get('general.defaultCronTime'),
         protected _api: IWatchResultFetcher = new DefaultWatchResultFetcher()
     ) {
         super();
@@ -28,10 +30,13 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
      * @returns void
      */
     public startWatching(): void {
-        if (!this._isWatching) {
-            this._isWatching = true;
-            this.keepWatching();
-        }
+        this._cronJob = this._cronJob || new CronJob({
+            cronTime: this._cronTime,
+            onTick: this._cronTickFunc.bind(this),
+            start: false
+        });
+
+        this._cronJob.start();
     }
 
     /**
@@ -39,35 +44,18 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
      * @returns void
      */
     public stopWatching(): void {
-        this._isWatching = false;
+        this._cronJob.stop();
     }
 
-    /**
-     * gets result from API
-     * @returns Promise
-     */
-    public async recheck(): Promise<void> {
-        if (this._isWatching) {
-            try {
-                const response: IFetcherApiResult = await this._api.check(this._methodUrl);
+    private async _cronTickFunc(): Promise<void> {
+        try {
+            const response: IFetcherApiResult = await this._api.check(this._methodUrl);
 
-                if (response.entities.length > 0) {
-                    this.emit(EResultWatcherEvent.NEW_RESULT, response);
-                }
-
-                this.keepWatching();
-            } catch (err) {
-                this.emit(EResultWatcherEvent.ERROR, err.message);
-                this.keepWatching();
+            if (response.entities.length > 0) {
+                this.emit(EResultWatcherEvent.NEW_RESULT, response);
             }
+        } catch (err) {
+            this.emit(EResultWatcherEvent.ERROR, err.message);
         }
-    }
-
-    /**
-     * gets result from API
-     * @returns void
-     */
-    private keepWatching(): void {
-        setTimeout(this.recheck.bind(this), this._interval);
     }
 }

@@ -1,6 +1,6 @@
 {
   "general": {
-    "defaultInterval": 10000,
+    "defaultCronTime": "*/10 * * * * *",
     "botTGToken": "*",
     "numVerboseErrors": 20
   },
