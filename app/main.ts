@@ -7,7 +7,6 @@ import DefaultResultWatcher from './watcher/default';
 import logger from './logger/default';
 import * as config from 'config';
 import * as util from 'util';
-import {DefaultWatchResultFetcher} from './watch_result_fetcher/default';
 
 export class MainApp {
     private _activeWatchers: Map<string, IResultWatcher> = new Map<string, IResultWatcher>();
@@ -16,8 +15,7 @@ export class MainApp {
         protected _bot: IBot = new DefaultBot(config.get('general.botTGToken'), {polling: true}),
         protected _auth: IAuth = new Auth(),
         protected _WatcherConstructor: any = DefaultResultWatcher, // TODO constructor type
-        protected _botAuthToken: string = config.get('botAuth.token'),
-        protected _watchResultFetcher = new DefaultWatchResultFetcher()
+        protected _botAuthToken: string = config.get('botAuth.token')
     ) {}
 
     public bootstrap(): void {
