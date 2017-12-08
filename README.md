@@ -12,11 +12,6 @@ Gives access to non-public commands (such as ``/start``).
 Starts eventually sending GET requests to <endponint>, processing response and printing info to subscribed user.
 Requests will include Authorization header (see config structure for credentials).
 
-### /check \<endpoint\>
-Sends 1 GET request to provided <endponint>, processing response and printing info to subscribed user.
-Request will include Authorization header (see config structure for credentials).
-
-
 Response structure should be like:
 
 ```
@@ -34,6 +29,11 @@ Response structure should be like:
     ]
 }
 ```
+
+### /check \<endpoint\>
+Sends 1 GET request to provided <endponint>, processing response and printing info to subscribed user.
+Request will include Authorization header.
+
  
 ### /stop
 Stops sending requests.
