@@ -1,5 +1,5 @@
 import EventEmitter = NodeJS.EventEmitter;
-import {IFetcherApiResult, IWatchResultFetcher} from '../watch_result_fetcher/interfaces';
+import {IFetcherApiResult} from '../watch_result_fetcher/interfaces';
 
 export type IResult = IFetcherApiResult;
 
@@ -12,5 +12,6 @@ export interface IResultWatcher extends EventEmitter {
     startWatching(): void;
     stopWatching(): void;
     recheck(): Promise<void>;
+    checkOnce(): Promise<IResult>
     on(event: EResultWatcherEvent, handler: (payload: string | IResult) => void): any;
 }

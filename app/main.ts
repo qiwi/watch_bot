@@ -7,6 +7,8 @@ import DefaultResultWatcher from './watcher/default';
 import logger from './logger/default';
 import * as config from 'config';
 import * as util from 'util';
+import {DefaultWatchResultFetcher} from './watch_result_fetcher/default';
+import {BotRuntimeError} from './error/bot';
 
 export class MainApp {
     private _activeWatchers: Map<string, IResultWatcher> = new Map<string, IResultWatcher>();
@@ -16,36 +18,37 @@ export class MainApp {
         protected _auth: IAuth = new Auth(),
         protected _WatcherConstructor: any = DefaultResultWatcher, // TODO constructor type
         protected _botAuthToken: string = config.get('botAuth.token'),
-        protected _pollIntervalMs: number = config.get('general.defaultInterval')
+        protected _pollIntervalMs: number = config.get('general.defaultInterval'),
+        protected _watchResultFetcher = new DefaultWatchResultFetcher()
     ) {}
 
     public bootstrap(): void {
-        this._bot.onText(/\/echo (.+)/, (msg, match) => {
+        this._bot.onText(/\/echo (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
             const resp = match[1];
 
-            this._bot.sendMessage(chatId, resp);
-        });
+            await this._bot.sendMessage(chatId, resp);
+        }));
 
-        this._bot.onText(/\/auth (.+)/, (msg, match) => {
+        this._bot.onText(/\/auth (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
             const resp = match[1];
 
             if (resp === this._botAuthToken) {
                 this._auth.authenticate(chatId);
-                this._bot.sendMessage(chatId, 'Successfully authenticated. Now commands are allowed for you!');
+                await this._bot.sendMessage(chatId, 'Successfully authenticated. Now commands are allowed for you!');
             } else {
-                this._bot.sendMessage(chatId, 'Wrong token!');
+                await this._bot.sendMessage(chatId, 'Wrong token!');
             }
-        });
+        }));
 
-        this._bot.onText(/\/auth$/, (msg, match) => {
+        this._bot.onText(/\/auth$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
-            this._bot.sendMessage(chatId, 'You need to provide a token!');
-        });
+            await this._bot.sendMessage(chatId, 'You need to provide a token!');
+        }));
 
-        this._bot.onText(/\/start (.+)/, (msg, match) => {
+        this._bot.onText(/\/start (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
             if (this._checkAuth(chatId)) {
@@ -56,27 +59,53 @@ export class MainApp {
                 watcher.startWatching();
 
                 this._bot.setActive(chatId);
-                this._bot.sendMessage(chatId, 'started watching');
+                await this._bot.sendMessage(chatId, 'started watching');
             }
-        });
+        }));
 
-        this._bot.onText(/\/start$/, (msg, match) => {
+        this._bot.onText(/\/start$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
-            this._bot.sendMessage(chatId, 'You need to provide watch url');
-        });
+            await this._bot.sendMessage(chatId, 'You need to provide watch url');
+        }));
 
-        this._bot.onText(/\/stop_watch$/, (msg, match) => {
+        this._bot.onText(/\/check (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
+            const chatId = this._getChatIdFromMsg(msg);
+
+            if (this._checkAuth(chatId)) {
+                try {
+                    await this._bot.sendMessage(chatId, 'Checking');
+
+                    const watcher = new this._WatcherConstructor(match[1]);
+
+                    const result = await watcher.checkOnce();
+
+                    await this._processWatcherResult(result, chatId);
+                } catch (err) {
+                    await this._bot.sendMessage(chatId, 'Got error: ' + err.message);
+                    throw err;
+                }
+
+            }
+        }));
+
+        this._bot.onText(/\/check$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
+            const chatId = this._getChatIdFromMsg(msg);
+
+            await this._bot.sendMessage(chatId, 'You need to provide url to check');
+        }));
+
+        this._bot.onText(/\/stop_watch$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
             if (this._checkAuth((chatId))) {
                 this._deleteWatcher(chatId);
 
-                this._bot.sendMessage(chatId, 'stopped watching');
+                await this._bot.sendMessage(chatId, 'stopped watching');
             }
-        });
+        }));
 
-        this._bot.onText(/\/stop$/, (msg, match) => {
+        this._bot.onText(/\/stop$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
             if (this._checkAuth(chatId)) {
@@ -88,12 +117,12 @@ export class MainApp {
                     if (watcher) {
                         watcher.stopWatching();
                     }
-                    this._bot.sendMessage(chatId, 'stopped watching, because all users are not listening');
+                    await this._bot.sendMessage(chatId, 'stopped watching, because all users are not listening');
                 } else {
-                    this._bot.sendMessage(chatId, 'stopped sending watch messages to you');
+                    await this._bot.sendMessage(chatId, 'stopped sending watch messages to you');
                 }
             }
-        });
+        }));
     }
 
     protected _getChatIdFromMsg(msg: any): string {
@@ -131,29 +160,7 @@ export class MainApp {
 
         watcher.on(EResultWatcherEvent.NEW_RESULT, async (res: IResult) => {
             errorSequenceLength = 0;
-
-            logger.info('new Messages: ' + res);
-
-            await this._bot.sendMessage(chatId, res.message);
-
-            let message = '';
-
-            res.entities.forEach((entity): void => {
-                message += '\n';
-                Object.keys(entity.meta).forEach((key) => {
-                    message += `\n${key}: ${JSON.stringify(entity.meta[key])}`;
-                });
-            });
-
-            let newMessage = message.substr(0, 4000);
-
-            if (newMessage !== message) {
-                newMessage += '...';
-            }
-
-            if (!!message) {
-                this._bot.sendMessage(chatId, newMessage);
-            }
+            await this._processWatcherResult(res, chatId);
         });
 
         watcher.on(EResultWatcherEvent.ERROR, (res: string) => {
@@ -178,6 +185,44 @@ export class MainApp {
             activeWatcher.stopWatching();
 
             this._activeWatchers.delete(chatId);
+        }
+    }
+
+    private _createAsyncTryCatchWrapper(
+        asyncFunction: (...args: any[]) => Promise<any>
+    ): (...args: any[]) => Promise<any> {
+
+        return async (...args: any[]) => {
+            try {
+                return await asyncFunction.apply(this, args);
+            } catch (err) {
+                logger.error(err);
+            }
+        }
+    }
+
+    private async _processWatcherResult(res: IResult, chatId: string): Promise<void> {
+        logger.info('new Messages: ' + JSON.stringify(res));
+
+        await this._bot.sendMessage(chatId, res.message);
+
+        let message = '';
+
+        res.entities.forEach((entity): void => {
+            message += '\n';
+            Object.keys(entity.meta).forEach((key) => {
+                message += `\n${key}: ${JSON.stringify(entity.meta[key])}`;
+            });
+        });
+
+        let newMessage = message.substr(0, 4000);
+
+        if (newMessage !== message) {
+            newMessage += '...';
+        }
+
+        if (!!message) {
+            await this._bot.sendMessage(chatId, newMessage);
         }
     }
 }
