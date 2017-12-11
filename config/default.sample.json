@@ -3,7 +3,7 @@
     "defaultCronTime": "*/10 * * * * *",
     "botTGToken": "*",
     "numVerboseErrors": 20,
-    "defaultWatchUrl": "https://rnd-test.qiwi.com/api/reports/overdue_requests"
+    "defaultWatchUrl": "https://test"
   },
   "auth": {
     "method": "JWT",
@@ -15,6 +15,7 @@
   "botAuth": {
     "token": "SomeTest",
     "allowedChats": [1111, 2222]
-  }
+  },
+  "backupFolder": "./"
 }
 

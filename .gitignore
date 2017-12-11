@@ -6,3 +6,4 @@ config/*
 out/
 .vscode/
 .idea
+*.backup.json

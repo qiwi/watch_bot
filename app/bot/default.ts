@@ -1,21 +1,19 @@
 import TelegramBot = require('node-telegram-bot-api'); // required this way, because of weird error in @types
 import logger from '../logger/default';
 import * as config from 'config';
-import {IBot} from './interfaces';
+import {IBot, IBotChat} from './interfaces';
+import {IBackuper} from '../backuper/interfaces';
+import {FSBackuper} from '../backuper/fsbackuper';
 
 const numVerboseErrors: number = config.get('general.numVerboseErrors');
 
-interface IChat {
-    /** telegram chat id */
-    id: string;
-    /** maximal amount of errors to be sent to user if a huge seri of errors occurs */
-    errorSequenceLength: number;
-}
-
 export default class DefaultBot extends TelegramBot implements IBot {
-    private _activeChats: Map<string, IChat> = new Map<string, IChat>();
-
-    constructor(token: string, options?: any) {
+    constructor(
+        token: string,
+        options?: any,
+        private _activeChats: Map<string, IBotChat> = new Map<string, IBotChat>(),
+        protected _backuper: IBackuper = new FSBackuper()
+    ) {
         super(token, options);
     }
     /**
@@ -26,7 +24,7 @@ export default class DefaultBot extends TelegramBot implements IBot {
      * @returns Promise
      */
     public async sendMessage(id: string, msg: string, options?: any): Promise<void> {
-        const chat: IChat = this._activeChats.get(id);
+        const chat: IBotChat = this._activeChats.get(id);
         let doSend: boolean = true;
 
         try {
@@ -40,6 +38,7 @@ export default class DefaultBot extends TelegramBot implements IBot {
                     chat.errorSequenceLength = 0;
                 }
                 this._activeChats.set(id, chat);
+                this._backuper.backupActiveChatsData(this._activeChats);
             }
             if (doSend) {
                 await super.sendMessage(id, msg, options);
@@ -64,6 +63,7 @@ export default class DefaultBot extends TelegramBot implements IBot {
      */
     public setActive(id: string): void {
         this._activeChats.set(id, {id, errorSequenceLength: 0});
+        this._backuper.backupActiveChatsData(this._activeChats);
     }
     /**
      * Sets chat inactive. If chat is active, bot sends messages into the chat on sendToAll call
@@ -72,6 +72,7 @@ export default class DefaultBot extends TelegramBot implements IBot {
      */
     public setInactive(id: string): void {
         this._activeChats.delete(id);
+        this._backuper.backupActiveChatsData(this._activeChats);
     }
     /**
      * Returns the amount of active chats

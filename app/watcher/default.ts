@@ -1,6 +1,6 @@
 import {EventEmitter} from 'events';
 import {DefaultWatchResultFetcher} from '../watch_result_fetcher/default';
-import {EResultWatcherEvent, IResult, IResultWatcher} from './interfaces';
+import {EResultWatcherEvent, IResult, IResultWatcher, IWatcherWatchData} from './interfaces';
 import {IFetcherApiResult, IWatchResultFetcher} from '../watch_result_fetcher/interfaces';
 import {ResultWatcherError} from '../error/result_watcher';
 import {CronJob} from 'cron';
@@ -8,22 +8,27 @@ import * as config from 'config';
 
 export default class DefaultResultWatcher extends EventEmitter implements IResultWatcher {
     private _cronJob: CronJob;
+    private _watchData: IWatcherWatchData;
 
     constructor(
-        protected _methodUrl: string,
-        protected _cronTime: string = config.get('general.defaultCronTime'),
+        watchUrl: string,
+        watchInterval: string = config.get('general.defaultCronTime'),
         protected _api: IWatchResultFetcher = new DefaultWatchResultFetcher()
     ) {
         super();
+        this._watchData = {
+            watchUrl,
+            watchInterval
+        }
     }
 
-    public getWatchInterval(): string {
-        return this._cronTime;
+    public getWatchData(): IWatcherWatchData {
+        return this._watchData;
     }
 
     public async checkOnce(): Promise<IResult> {
         try {
-            return await this._api.check(this._methodUrl);
+            return await this._api.check(this._watchData.watchUrl);
         } catch (err) {
             throw new ResultWatcherError(err);
         }
@@ -35,7 +40,7 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
      */
     public startWatching(): void {
         this._cronJob = this._cronJob || new CronJob({
-            cronTime: this._cronTime,
+            cronTime: this._watchData.watchInterval,
             onTick: this._cronTickFunc.bind(this),
             start: false
         });
@@ -53,7 +58,7 @@ export default class DefaultResultWatcher extends EventEmitter implements IResul
 
     private async _cronTickFunc(): Promise<void> {
         try {
-            const response: IFetcherApiResult = await this._api.check(this._methodUrl);
+            const response: IFetcherApiResult = await this._api.check(this._watchData.watchUrl);
 
             if (response.entities.length > 0) {
                 this.emit(EResultWatcherEvent.NEW_RESULT, response);
