@@ -15,13 +15,14 @@ export class MainApp {
         protected _bot: IBot = new DefaultBot(config.get('general.botTGToken'), {polling: true}),
         protected _auth: IAuth = new Auth(),
         protected _WatcherConstructor: any = DefaultResultWatcher, // TODO constructor type
-        protected _botAuthToken: string = config.get('botAuth.token')
     ) {}
 
     public bootstrap(): void {
         this._bot.onText(/\/echo (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
             const resp = match[1];
+
+            logger.debug('got msg', msg);
 
             await this._bot.sendMessage(chatId, resp);
         }));
@@ -30,11 +31,10 @@ export class MainApp {
             const chatId = this._getChatIdFromMsg(msg);
             const resp = match[1];
 
-            if (resp === this._botAuthToken) {
-                this._auth.authenticate(chatId);
+            if (this._auth.authenticate(chatId, resp)) {
                 await this._bot.sendMessage(chatId, 'Successfully authenticated. Now commands are allowed for you!');
             } else {
-                await this._bot.sendMessage(chatId, 'Wrong token!');
+                await this._bot.sendMessage(chatId, 'Auth failed');
             }
         }));
 

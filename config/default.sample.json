@@ -12,7 +12,8 @@
     "logLevel": "debug"
   },
   "botAuth": {
-    "token": "SomeTest"
+    "token": "SomeTest",
+    "allowedChats": [1111, 2222]
   }
 }
 

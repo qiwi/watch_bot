@@ -1,4 +1,4 @@
 export interface IAuth {
-    isAuthenticated(id: string): boolean;
-    authenticate(id: string): void;
+    isAuthenticated(chatId: string): boolean;
+    authenticate(chatId: string, keyword: string): boolean;
 }
