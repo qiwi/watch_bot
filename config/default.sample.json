@@ -2,7 +2,8 @@
   "general": {
     "defaultCronTime": "*/10 * * * * *",
     "botTGToken": "*",
-    "numVerboseErrors": 20
+    "numVerboseErrors": 20,
+    "defaultWatchUrl": "https://rnd-test.qiwi.com/api/reports/overdue_requests"
   },
   "auth": {
     "method": "JWT",

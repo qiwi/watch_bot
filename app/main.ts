@@ -44,13 +44,21 @@ export class MainApp {
             await this._bot.sendMessage(chatId, 'You need to provide a token!');
         }));
 
-        this._bot.onText(/\/start (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
+        this._bot.onText(/\/start(.*)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
+
+            const watchUrl = this._getWatchUrlFromMsgMatchOrConfig(match);
+
+            if (!watchUrl) {
+                await this._bot.sendMessage(chatId, 'no watch url provided');
+
+                return;
+            }
 
             if (this._checkAuth(chatId)) {
                 this._deleteWatcher(chatId);
 
-                const watcher = this._getOrCreateWatcher(chatId, match[1]);
+                const watcher = this._getOrCreateWatcher(chatId, watchUrl);
 
                 watcher.startWatching();
 
@@ -59,20 +67,22 @@ export class MainApp {
             }
         }));
 
-        this._bot.onText(/\/start$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
+        this._bot.onText(/\/check(.*)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
             const chatId = this._getChatIdFromMsg(msg);
 
-            await this._bot.sendMessage(chatId, 'You need to provide watch url');
-        }));
+            const watchUrl = this._getWatchUrlFromMsgMatchOrConfig(match);
 
-        this._bot.onText(/\/check (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
+            if (!watchUrl) {
+                await this._bot.sendMessage(chatId, 'no check url provided');
+
+                return;
+            }
 
             if (this._checkAuth(chatId)) {
                 try {
                     await this._bot.sendMessage(chatId, 'Checking');
 
-                    const watcher = new this._WatcherConstructor(match[1]);
+                    const watcher = new this._WatcherConstructor(watchUrl);
 
                     const result = await watcher.checkOnce();
 
@@ -83,12 +93,6 @@ export class MainApp {
                 }
 
             }
-        }));
-
-        this._bot.onText(/\/check$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
-
-            await this._bot.sendMessage(chatId, 'You need to provide url to check');
         }));
 
         this._bot.onText(/\/stop_watch$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
@@ -119,16 +123,6 @@ export class MainApp {
                 }
             }
         }));
-    }
-
-    protected _getChatIdFromMsg(msg: any): string {
-        const chatId = msg.chat && msg.chat.id;
-
-        if (util.isNullOrUndefined(chatId)) {
-            throw new Error('Wrong chat id presented: ' + JSON.stringify(msg));
-        }
-
-        return chatId;
     }
 
     protected _checkAuth(id: string): boolean {
@@ -220,5 +214,27 @@ export class MainApp {
         if (!!message) {
             await this._bot.sendMessage(chatId, newMessage);
         }
+    }
+
+    private _getWatchUrlFromMsgMatchOrConfig(match: string[]): string {
+        logger.debug('match for url is', match[1]);
+
+        const result = match[1].trim();
+
+        if (result.length) {
+            return result;
+        }
+
+        return config.general.defaultWatchUrl;
+    }
+
+    private _getChatIdFromMsg(msg: any): string {
+        const chatId = msg.chat && msg.chat.id;
+
+        if (util.isNullOrUndefined(chatId)) {
+            throw new Error('Wrong chat id presented: ' + JSON.stringify(msg));
+        }
+
+        return chatId;
     }
 }

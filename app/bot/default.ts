@@ -10,7 +10,6 @@ interface IChat {
     id: string;
     /** maximal amount of errors to be sent to user if a huge seri of errors occurs */
     errorSequenceLength: number;
-    isAuthenticated: boolean;
 }
 
 export default class DefaultBot extends TelegramBot implements IBot {
@@ -64,7 +63,7 @@ export default class DefaultBot extends TelegramBot implements IBot {
      * @returns void
      */
     public setActive(id: string): void {
-        this._activeChats.set(id, {id, errorSequenceLength: 0, isAuthenticated: false});
+        this._activeChats.set(id, {id, errorSequenceLength: 0});
     }
     /**
      * Sets chat inactive. If chat is active, bot sends messages into the chat on sendToAll call
