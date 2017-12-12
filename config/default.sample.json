@@ -2,7 +2,8 @@
   "general": {
     "defaultCronTime": "*/10 * * * * *",
     "botTGToken": "*",
-    "numVerboseErrors": 20
+    "numVerboseErrors": 20,
+    "defaultWatchUrl": "https://test"
   },
   "auth": {
     "method": "JWT",
@@ -12,7 +13,9 @@
     "logLevel": "debug"
   },
   "botAuth": {
-    "token": "SomeTest"
-  }
+    "token": "SomeTest",
+    "allowedChats": [1111, 2222]
+  },
+  "backupFolder": "./"
 }
 

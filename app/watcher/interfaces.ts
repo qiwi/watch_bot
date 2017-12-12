@@ -8,10 +8,15 @@ export enum EResultWatcherEvent {
     ERROR = 'error'
 }
 
+export interface IWatcherWatchData {
+    watchUrl: string;
+    watchInterval: string;
+}
+
 export interface IResultWatcher extends EventEmitter {
     startWatching(): void;
     stopWatching(): void;
     checkOnce(): Promise<IResult>;
-    getWatchInterval(): string;
+    getWatchData(): Readonly<IWatcherWatchData>;
     on(event: EResultWatcherEvent, handler: (payload: string | IResult) => void): any;
 }

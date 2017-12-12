@@ -8,3 +8,10 @@ export interface IBot extends TelegramBot {
     setActive(id: string): void;
     setInactive(id: string): void;
 }
+
+export interface IBotChat {
+    /** telegram chat id */
+    id: string;
+    /** maximal amount of errors to be sent to user if a huge seri of errors occurs */
+    errorSequenceLength: number;
+}

@@ -52,6 +52,7 @@ git clone git@github.com:qiwi/watch_bot.git
     "defaultCronTime": "*/10 * * * * *",  // polling cron time
     "botTGToken": "*", // bot telegram token - talk to @BotFather at telegram to get it
     "numVerboseErrors": 20 // bot will stop printing error message after numVerboseErrors errors in fetching data
+    "defaultWatchUrl": "https://test" // default watch url for /start and /check commands
   },
   "auth": {
     "method": "JWT", // Authorization header value: <method> <token>
@@ -61,8 +62,10 @@ git clone git@github.com:qiwi/watch_bot.git
     "logLevel": "debug"
   },
   "botAuth": {
-    "token": "SomeTest" // see /auth command
-  }
+    "token": "SomeTest" // see /auth command,
+    "allowedChats": [1111, 2222] // whitelisted chats list (optional)
+  },
+  "backupFolder": "./" // folder for backuping active chats data
 }
 ```
 
