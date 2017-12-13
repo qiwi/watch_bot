@@ -146,9 +146,6 @@ export class MainApp {
                 const chatId = this._getChatIdFromMsg(msg);
                 const resp = this._getArgumentFromMsgMatchOrConfig(match);
 
-                logger.debug('got msg', msg);
-                logger.debug('got match', match);
-
                 if (resp) {
                     await this._bot.sendMessage(chatId, resp);
                 }
@@ -156,7 +153,10 @@ export class MainApp {
         );
         const authAction = this._createAsyncTryCatchWrapper(
             async (msg, match) => {
+
+                logger.debug('got msg', msg);
                 logger.debug('got match', match);
+
                 const chatId = this._getChatIdFromMsg(msg);
                 const resp = this._getArgumentFromMsgMatchOrConfig(match);
 
@@ -205,8 +205,6 @@ export class MainApp {
         const checkAction = this._createAsyncTryCatchWrapper(
             async (msg, match) => {
                 const chatId = this._getChatIdFromMsg(msg);
-
-                logger.debug('got match', match);
 
                 const watchUrl = this._getArgumentFromMsgMatchOrConfig(match) || config.general.defaultWatchUrl;
 
