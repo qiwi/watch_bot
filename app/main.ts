@@ -246,6 +246,16 @@ export class MainApp {
             }
         );
 
+        const helpAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
+                const chatId = this._getChatIdFromMsg(msg);
+                await this._bot.sendMessage(chatId, '/auth <token> - Make auth command');
+                await this._bot.sendMessage(chatId, '/check <url> - Do check url command (single url request)');
+                await this._bot.sendMessage(chatId, '/start <url> - Create url polling');
+                await this._bot.sendMessage(chatId, '/stop - Stop url polling');
+            }
+        );
+
         this._getCommandRegexps('echo', username).forEach(reg => {
             this._bot.onText(
                 reg,
@@ -278,6 +288,13 @@ export class MainApp {
             this._bot.onText(
                 reg,
                 checkAction
+            );
+        });
+
+        this._getCommandRegexps('help', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                helpAction
             );
         });
     }
