@@ -40,7 +40,7 @@ export class MainApp {
 
         this._activeWatchers = activeWatchers;
 
-        this._initBotActions();
+        await this._initBotActions();
     }
 
     protected _checkAuth(id: string): boolean {
@@ -138,107 +138,171 @@ export class MainApp {
         }
     }
 
-    protected _initBotActions(): void {
-        this._bot.onText(/\/echo (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
-            const resp = match[1];
+    protected async _initBotActions(): Promise<void> {
+        const username = (await this._bot.getMe()).username;
 
-            logger.debug('got msg', msg);
+        const echoAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
+                const chatId = this._getChatIdFromMsg(msg);
+                const resp = this._getArgumentFromMsgMatchOrConfig(match);
 
-            await this._bot.sendMessage(chatId, resp);
-        }));
-
-        this._bot.onText(/\/auth (.+)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
-            const resp = match[1];
-
-            if (this._auth.authenticate(chatId, resp)) {
-                await this._bot.sendMessage(chatId, 'Successfully authenticated. Now commands are allowed for you!');
-            } else {
-                await this._bot.sendMessage(chatId, 'Auth failed');
+                if (resp) {
+                    await this._bot.sendMessage(chatId, resp);
+                }
             }
-        }));
+        );
+        const authAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
 
-        this._bot.onText(/\/auth$/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
+                logger.debug('got msg', msg);
+                logger.debug('got match', match);
 
-            await this._bot.sendMessage(chatId, 'You need to provide a token!');
-        }));
+                const chatId = this._getChatIdFromMsg(msg);
+                const resp = this._getArgumentFromMsgMatchOrConfig(match);
 
-        this._bot.onText(/\/start(.*)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
-
-            const watchUrl = this._getWatchUrlFromMsgMatchOrConfig(match);
-
-            if (!watchUrl) {
-                await this._bot.sendMessage(chatId, 'no watch url provided');
-
-                return;
-            }
-
-            if (this._checkAuth(chatId)) {
-                this._deleteWatcher(chatId);
-
-                const watcher = this._getOrCreateWatcher(chatId, watchUrl);
-
-                watcher.startWatching();
-
-                this._bot.setActive(chatId);
-                await this._bot.sendMessage(chatId, 'started watching with interval: ' +
-                    watcher.getWatchData().watchInterval
-                );
-            }
-        }));
-
-        this._bot.onText(/\/check(.*)/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
-
-            const watchUrl = this._getWatchUrlFromMsgMatchOrConfig(match);
-
-            if (!watchUrl) {
-                await this._bot.sendMessage(chatId, 'no check url provided');
-
-                return;
-            }
-
-            if (this._checkAuth(chatId)) {
-                try {
-                    await this._bot.sendMessage(chatId, 'Checking');
-
-                    const watcher = new this._WatcherConstructor(watchUrl);
-
-                    const result = await watcher.checkOnce();
-
-                    await this._processWatcherResult(result, chatId);
-                } catch (err) {
-                    await this._bot.sendMessage(chatId, 'Got error: ' + err.message);
-                    throw err;
+                if (!resp) {
+                    await this._bot.sendMessage(chatId, 'You need to provide a token!');
+                    return;
                 }
 
+                if (this._auth.authenticate(chatId, resp)) {
+                    await this._bot.sendMessage(
+                        chatId, 'Successfully authenticated. Now commands are allowed for you!'
+                    );
+                } else {
+                    await this._bot.sendMessage(chatId, 'Auth failed');
+                }
             }
-        }));
+        );
 
-        this._bot.onText(/\/stop/, this._createAsyncTryCatchWrapper(async (msg, match) => {
-            const chatId = this._getChatIdFromMsg(msg);
+        const startAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
+                const chatId = this._getChatIdFromMsg(msg);
 
-            if (this._checkAuth((chatId))) {
-                this._deleteWatcher(chatId);
+                const watchUrl = this._getArgumentFromMsgMatchOrConfig(match) || config.general.defaultWatchUrl;
 
-                await this._bot.sendMessage(chatId, 'stopped watching');
+                if (!watchUrl) {
+                    await this._bot.sendMessage(chatId, 'no watch url provided');
+
+                    return;
+                }
+
+                if (this._checkAuth(chatId)) {
+                    this._deleteWatcher(chatId);
+
+                    const watcher = this._getOrCreateWatcher(chatId, watchUrl);
+
+                    watcher.startWatching();
+
+                    this._bot.setActive(chatId);
+                    await this._bot.sendMessage(chatId, 'started watching with interval: ' +
+                        watcher.getWatchData().watchInterval
+                    );
+                }
             }
-        }));
+        );
+
+        const checkAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
+                const chatId = this._getChatIdFromMsg(msg);
+
+                const watchUrl = this._getArgumentFromMsgMatchOrConfig(match) || config.general.defaultWatchUrl;
+
+                if (!watchUrl) {
+                    await this._bot.sendMessage(chatId, 'no check url provided');
+
+                    return;
+                }
+
+                if (this._checkAuth(chatId)) {
+                    try {
+                        await this._bot.sendMessage(chatId, 'Checking');
+
+                        const watcher = new this._WatcherConstructor(watchUrl);
+
+                        const result = await watcher.checkOnce();
+
+                        await this._processWatcherResult(result, chatId);
+                    } catch (err) {
+                        await this._bot.sendMessage(chatId, 'Got error: ' + err.message);
+                        throw err;
+                    }
+
+                }
+            }
+        );
+
+        const stopAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
+                const chatId = this._getChatIdFromMsg(msg);
+
+                if (this._checkAuth((chatId))) {
+                    this._deleteWatcher(chatId);
+
+                    await this._bot.sendMessage(chatId, 'stopped watching');
+                }
+            }
+        );
+
+        const helpAction = this._createAsyncTryCatchWrapper(
+            async (msg, match) => {
+                const chatId = this._getChatIdFromMsg(msg);
+                await this._bot.sendMessage(chatId, '/auth <token> - Make auth command');
+                await this._bot.sendMessage(chatId, '/check <url> - Do check url command (single url request)');
+                await this._bot.sendMessage(chatId, '/start <url> - Create url polling');
+                await this._bot.sendMessage(chatId, '/stop - Stop url polling');
+            }
+        );
+
+        this._getCommandRegexps('echo', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                echoAction
+            );
+        });
+
+        this._getCommandRegexps('auth', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                authAction
+            );
+        });
+
+        this._getCommandRegexps('start', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                startAction
+            );
+        });
+
+        this._getCommandRegexps('stop', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                stopAction
+            );
+        });
+
+        this._getCommandRegexps('check', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                checkAction
+            );
+        });
+
+        this._getCommandRegexps('help', username).forEach(reg => {
+            this._bot.onText(
+                reg,
+                helpAction
+            );
+        });
     }
 
-    private _getWatchUrlFromMsgMatchOrConfig(match: string[]): string {
-        logger.debug('match for url is', match[1]);
+    private _getArgumentFromMsgMatchOrConfig(match: string[]): string {
+        logger.debug('match for url is', match);
 
-        const result = match[1].trim();
+        let result = match[1];
 
-        if (result.length) {
-            return result;
-        }
-
-        return config.general.defaultWatchUrl;
+        return result && result.trim();
     }
 
     private _getChatIdFromMsg(msg: any): string {
@@ -259,5 +323,14 @@ export class MainApp {
         });
 
         return watchData;
+    }
+
+    private _getCommandRegexps(command: string, username?: string): Array<RegExp> {
+        return [
+            new RegExp(`\/${command}@${username} (.+)?`),
+            new RegExp(`\/${command} (.+)?`),
+            new RegExp(`\/${command}$`),
+            new RegExp(`\/${command}@${username}$`),
+        ];
     }
 }
