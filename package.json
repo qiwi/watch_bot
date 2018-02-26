@@ -12,16 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TIXFeniks/CommentWatchBot.git"
+    "url": "git+https://github.com/qiwi/watch_bot.git"
   },
   "author": "TIXFeniks",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TIXFeniks/CommentWatchBot/issues"
+    "url": "https://github.com/qiwi/watch_bot/issues"
   },
-  "homepage": "https://github.com/TIXFeniks/CommentWatchBot#readme",
+  "homepage": "https://github.com/qiwi/watch_bot#readme",
   "dependencies": {
-    "@types/request-promise": "^4.1.36",
     "config": "^1.26.1",
     "cron": "^1.3.0",
     "log4js": "^2.0.1",
@@ -30,6 +29,7 @@
     "url-join": "^2.0.2"
   },
   "devDependencies": {
+    "@types/request-promise": "^4.1.36",
     "@types/cron": "^1.2.1",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.10",
