@@ -30,7 +30,7 @@ export class MainApp {
 
         const activeWatchers = new Map<string, IResultWatcher>();
         watcherData.forEach((value: IWatcherWatchData, key: string) => {
-            const watcher = new DefaultResultWatcher(value.watchUrl, value.watchInterval);
+            const watcher = new this._WatcherConstructor(value.watchUrl, value.watchInterval);
 
             this._setWatcherListeners(watcher, key);
 
